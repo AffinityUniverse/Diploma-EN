@@ -1,0 +1,1018 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>English Diploma · Lesson 01</title>
+<style>
+  @font-face {
+    font-family: 'SpokaHanSansNeo';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2108@1.1/SpoqaHanSansNeo-Thin.woff') format('woff');
+    font-weight: 100;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'SpokaHanSansNeo';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2108@1.1/SpoqaHanSansNeo-Light.woff') format('woff');
+    font-weight: 300;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'SpokaHanSansNeo';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2108@1.1/SpoqaHanSansNeo-Regular.woff') format('woff');
+    font-weight: 400;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'SpokaHanSansNeo';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2108@1.1/SpoqaHanSansNeo-Medium.woff') format('woff');
+    font-weight: 500;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'SpokaHanSansNeo';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2108@1.1/SpoqaHanSansNeo-Bold.woff') format('woff');
+    font-weight: 700;
+    font-display: swap;
+  }
+
+  :root {
+    color-scheme: dark;
+    --bg: #0D1D32;
+    --text: #ffffff;
+    --muted: rgba(255,255,255,.58);
+    --line: rgba(255,255,255,.16);
+    --card: #ffffff;
+    --card-text: #111111;
+    --card-muted: #777777;
+    --yellow: #FFD84A;
+    --yellow-soft: #FFF5BF;
+    --radius: 22px;
+    --shadow: 0 14px 40px rgba(0,0,0,.18);
+    font-family: 'SpokaHanSansNeo', sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  html, body {
+    margin: 0;
+    min-height: 100%;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'SpokaHanSansNeo', sans-serif;
+  }
+  button { font: inherit; }
+  button:focus-visible, [tabindex]:focus-visible {
+    outline: 2px solid #ffffff;
+    outline-offset: 4px;
+  }
+
+  .app { min-height: 100vh; background: var(--bg); }
+
+  /* ---------- COURSE LIST ---------- */
+  .list-page {
+    width: min(1180px, calc(100% - 48px));
+    margin: 0 auto;
+    padding: 74px 0 96px;
+  }
+  .eyebrow {
+    color: rgba(255,255,255,.46);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+  }
+  .list-page h1 {
+    margin: 12px 0 12px;
+    font-size: clamp(36px, 5vw, 60px);
+    line-height: 1.08;
+    letter-spacing: -.045em;
+    font-weight: 700;
+  }
+  .lead {
+    margin: 0 0 36px;
+    color: var(--muted);
+    line-height: 1.75;
+    font-size: 15px;
+    font-weight: 400;
+  }
+  .lesson-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+  }
+  .lesson-card {
+    appearance: none;
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas: "title arrow" "meta arrow";
+    column-gap: 22px;
+    row-gap: 2px;
+    align-items: center;
+    min-height: 142px;
+    padding: 27px 28px;
+    border: 1px solid rgba(255,255,255,.06);
+    border-radius: 28px;
+    background: #ffffff;
+    color: var(--card-text);
+    text-align: left;
+    box-shadow: 0 10px 30px rgba(0,0,0,.12);
+  }
+  .lesson-card.active { cursor: pointer; transition: transform .18s ease, box-shadow .18s ease; }
+  .lesson-card.active:hover { transform: translateY(-3px); box-shadow: 0 16px 38px rgba(0,0,0,.18); }
+  .lesson-card .arrow-dot {
+    grid-area: arrow;
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: #111111;
+    color: #ffffff;
+    font-size: 26px;
+    line-height: 1;
+    transition: transform .18s ease;
+  }
+  .lesson-card.active:hover .arrow-dot { transform: translateX(2px); }
+  .lesson-card strong {
+    grid-area: title;
+    display: block;
+    font-size: 28px;
+    line-height: 1.14;
+    letter-spacing: -.035em;
+    font-weight: 700;
+  }
+  .lesson-card .meta {
+    grid-area: meta;
+    color: var(--card-muted);
+    font-size: 14px;
+    line-height: 1.5;
+    font-weight: 400;
+  }
+  .lesson-card.disabled {
+    background: rgba(255,255,255,.72);
+    box-shadow: none;
+  }
+  .lesson-card.disabled strong { color: #4d4d4d; }
+  .lesson-card.disabled .meta { color: #999999; }
+  .lesson-card.disabled .arrow-dot {
+    background: #d9d9d9;
+    color: #ffffff;
+    font-size: 18px;
+  }
+
+  /* ---------- LESSON VIEW ---------- */
+  .lesson-view { min-height: 100vh; background: var(--bg); }
+  .toolbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 70px;
+    z-index: 30;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    padding: 0 18px;
+    border-bottom: 1px solid var(--line);
+    background: rgba(13,29,50,.94);
+    backdrop-filter: blur(14px);
+  }
+  .toolbar-left, .toolbar-right { display: flex; gap: 9px; align-items: center; }
+  .toolbar-right { justify-content: flex-end; }
+  .toolbtn {
+    border: 1px solid var(--line);
+    background: rgba(255,255,255,.06);
+    color: #ffffff;
+    border-radius: 12px;
+    height: 40px;
+    padding: 0 14px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-weight: 500;
+  }
+  .toolbtn:hover { background: rgba(255,255,255,.11); border-color: rgba(255,255,255,.34); }
+  .title-wrap { text-align: center; min-width: 0; }
+  .viewer-title {
+    font-weight: 700;
+    letter-spacing: -.025em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .page-count { margin-top: 3px; font-size: 11px; color: var(--muted); letter-spacing: .05em; }
+
+  .deck {
+    height: 100vh;
+    overflow-y: auto;
+    scroll-snap-type: y proximity;
+    scroll-padding-top: 108px;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255,255,255,.22) transparent;
+    padding-top: 70px;
+  }
+  .part {
+    min-height: calc(100vh - 70px);
+    scroll-snap-align: start;
+    scroll-margin-top: 108px;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    padding: 88px 94px 90px;
+  }
+  .part-inner { width: min(980px, 100%); align-self: flex-start; }
+  .part-kicker {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: .16em;
+    color: rgba(255,255,255,.46);
+  }
+  .part h2 {
+    margin: 12px 0 8px;
+    font-size: clamp(32px, 4.6vw, 52px);
+    line-height: 1.12;
+    letter-spacing: -.04em;
+    font-weight: 700;
+  }
+  .part-description {
+    margin: 0 0 34px;
+    color: #ffffff;
+    font-size: 15px;
+    line-height: 1.72;
+    font-weight: 400;
+  }
+
+  .content-stack { display: grid; gap: 14px; }
+  .reveal {
+    opacity: 0;
+    transform: translateY(34px);
+    pointer-events: none;
+    visibility: hidden;
+  }
+  .reveal.is-visible {
+    visibility: visible;
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+    animation: riseIn .52s cubic-bezier(.22,.75,.25,1) both;
+  }
+  @keyframes riseIn {
+    from { opacity: 0; transform: translateY(34px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .part.entering .part-inner { animation: partEnter .58s ease both; }
+  @keyframes partEnter {
+    from { opacity: .35; transform: translateY(26px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .language-card {
+    background: var(--card);
+    color: var(--card-text);
+    border-radius: var(--radius);
+    padding: 23px 26px;
+    box-shadow: var(--shadow);
+  }
+  .language-card .en {
+    margin: 0;
+    font-size: clamp(21px, 2.35vw, 30px);
+    line-height: 1.34;
+    letter-spacing: -.02em;
+    font-weight: 700;
+    color: #111111;
+  }
+  .language-card .ko {
+    margin: 7px 0 0;
+    color: #111111;
+    font-size: 14px;
+    line-height: 1.72;
+    font-weight: 400;
+    word-break: keep-all;
+  }
+  .term-card .en { font-size: clamp(24px, 2.7vw, 34px); }
+
+  /* ---------- PART 2 ---------- */
+  .notice-card {
+    border: 1px solid rgba(255,255,255,.16);
+    border-radius: 20px 0 20px 20px;
+    padding: 20px 22px;
+    background: rgba(255,255,255,.08);
+    color: #ffffff;
+  }
+  .notice-label {
+    display: inline-block;
+    margin-bottom: 8px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,.62);
+  }
+  .notice-card .en { color:#ffffff; font-size:18px; line-height:1.55; font-weight:700; }
+  .notice-card .ko { margin-top:6px; color:#ffffff; font-size:14px; line-height:1.7; font-weight:400; }
+  .situation-title {
+    margin: 20px 0 2px;
+    color: #ffffff;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -.01em;
+  }
+  .situation-title small {
+    display: block;
+    margin-top: 4px;
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 400;
+  }
+  .chat-row { display: flex; width: 100%; }
+  .chat-row.teacher { justify-content: flex-start; }
+  .chat-row.student { justify-content: flex-end; }
+  .bubble {
+    width: min(78%, 760px);
+    padding: 19px 22px;
+    color: #111111;
+    box-shadow: 0 10px 28px rgba(0,0,0,.14);
+  }
+  .teacher .bubble {
+    background: #ffffff;
+    border-radius: 0 20px 20px 20px;
+  }
+  .student .bubble {
+    background: var(--yellow);
+    border-radius: 20px 0 20px 20px;
+  }
+  .speaker {
+    margin-bottom: 7px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: #797979;
+  }
+  .bubble .en { font-size: 18px; line-height: 1.48; font-weight: 700; }
+  .bubble .ko { margin-top: 7px; color: #111111; font-size: 13px; line-height: 1.72; font-weight: 400; }
+  .bubble .action-note { color: #555; font-size: 11px; font-weight: 500; margin-bottom: 5px; }
+  .slot { font-weight: 700; border-bottom: 2px solid currentColor; padding: 0 2px; }
+  .hint-box {
+    width: min(78%, 760px);
+    margin-left: auto;
+    border-radius: 20px 0 20px 20px;
+    background: rgba(255,255,255,.08);
+    border: 1px solid rgba(255,255,255,.16);
+    padding: 20px 22px;
+  }
+  .hint-box strong { display: block; font-size: 13px; margin-bottom: 11px; }
+  .hint-list { display: flex; flex-wrap: wrap; gap: 8px; }
+  .hint-chip {
+    padding: 8px 11px;
+    border-radius: 999px;
+    background: #ffffff;
+    color: #111111;
+    font-size: 12px;
+    font-weight: 700;
+  }
+  .hint-chip span { color: #111111; font-weight: 400; margin-left: 4px; }
+
+  /* ---------- PART 3 ---------- */
+  .pattern-section { margin-top: 48px; scroll-margin-top: 108px; }
+  .pattern-section:first-of-type { margin-top: 12px; }
+  .pattern-subtitle {
+    color: #ffffff;
+    font-size: clamp(22px, 2.6vw, 30px);
+    line-height: 1.35;
+    font-weight: 700;
+    letter-spacing: -.025em;
+    margin: 0 0 14px;
+  }
+  .pattern-subtitle .tag {
+    display: inline-block;
+    margin-right: 8px;
+    color: rgba(255,255,255,.48);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: .10em;
+    vertical-align: middle;
+  }
+  .example-label, .quiz-label {
+    display: inline-block;
+    margin-bottom: 9px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: #8c8c8c;
+  }
+  .quiz-card {
+    background: #ffffff;
+    color: #111111;
+    border-radius: 22px;
+    padding: 23px 26px;
+    box-shadow: var(--shadow);
+    cursor: pointer;
+    user-select: none;
+  }
+  .quiz-card .ko {
+    margin: 0 0 13px;
+    color: #111111;
+    font-size: 14px;
+    line-height: 1.74;
+    font-weight: 400;
+  }
+  .masked-answer {
+    display: block;
+    font-size: clamp(19px, 2.2vw, 27px);
+    line-height: 1.55;
+    letter-spacing: -.02em;
+    font-weight: 700;
+    word-spacing: normal;
+  }
+  .masked-answer > span { display: inline; }
+  .answer-keyword { color: #111111; }
+  .mask {
+    position: relative;
+    display: inline;
+    border-radius: 4px;
+    color: transparent;
+    background: #111111;
+    padding: 0 .10em;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+    transition: background .26s ease, color .26s ease;
+  }
+  .quiz-card.revealed .mask {
+    color: #111111;
+    background: transparent;
+  }
+
+  /* ---------- NAV ---------- */
+  .navbtn {
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 54px;
+    height: 72px;
+    border-radius: 16px;
+    border: 1px solid var(--line);
+    background: rgba(255,255,255,.08);
+    color: #ffffff;
+    backdrop-filter: blur(10px);
+    cursor: pointer;
+    font-size: 30px;
+    display: grid;
+    place-items: center;
+    z-index: 28;
+  }
+  .navbtn:hover { background: rgba(255,255,255,.14); }
+  .navbtn.prev { left: 20px; }
+  .navbtn.next { right: 20px; }
+  .navbtn:disabled { opacity: .22; cursor: default; }
+  .progress-pill {
+    position: fixed;
+    left: 50%;
+    bottom: 20px;
+    transform: translateX(-50%);
+    z-index: 25;
+    padding: 8px 12px;
+    border: 1px solid rgba(255,255,255,.14);
+    border-radius: 999px;
+    background: rgba(13,29,50,.82);
+    color: rgba(255,255,255,.72);
+    backdrop-filter: blur(10px);
+    font-size: 11px;
+    pointer-events: none;
+  }
+  .complete-card {
+    margin-top: 18px;
+    border-radius: 22px;
+    border: 1px solid rgba(255,255,255,.16);
+    background: rgba(255,255,255,.07);
+    padding: 22px;
+    text-align: center;
+  }
+  .complete-card strong { display: block; font-size: 20px; margin-bottom: 5px; }
+  .complete-card span { color: #ffffff; font-size: 13px; font-weight: 400; }
+
+  @media (max-width: 980px) {
+    .lesson-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .part { padding-left: 72px; padding-right: 72px; }
+  }
+  @media (max-width: 680px) {
+    .list-page { width: min(100% - 24px, 1180px); padding-top: 42px; }
+    .lesson-grid { grid-template-columns: 1fr; }
+    .lesson-card { min-height: 116px; padding: 20px 18px; border-radius: 20px; }
+    .lesson-card strong { font-size: 24px; }
+    .lesson-card .arrow-dot { width: 44px; height: 44px; font-size: 21px; }
+    .toolbar { grid-template-columns: auto 1fr auto; padding: 0 10px; }
+    .toolbtn .label { display: none; }
+    .part { padding: 70px 48px 82px; }
+    .language-card, .quiz-card { padding: 19px 18px; border-radius: 18px; }
+    .bubble { width: 92%; padding: 17px 18px; }
+    .hint-box { width: 92%; }
+    .navbtn { width: 40px; height: 58px; border-radius: 13px; font-size: 25px; }
+    .navbtn.prev { left: 6px; }
+    .navbtn.next { right: 6px; }
+    .hint-chip { width: 100%; }
+    .progress-pill { bottom: 12px; }
+  }
+</style>
+</head>
+<body>
+<div id="app" class="app"></div>
+
+<script>
+const app = document.getElementById('app');
+
+const TERMS = [
+  {
+    en: 'Perspective',
+    ko: '원근법 · 평면에 깊이감과 공간감을 주는 기법'
+  },
+  {
+    en: 'Tilt',
+    ko: '기울이기 · 도형을 비틀어 입체감을 주는 기능'
+  },
+  {
+    en: 'Align Center',
+    ko: '가운데 정렬 · 오브젝트의 중심축을 맞추는 기능'
+  },
+  {
+    en: 'Stroke',
+    ko: '테두리 선 · 도형의 바깥 선 색상 및 두께'
+  },
+  {
+    en: 'Convert to Curves',
+    ko: '곡선 변환 · Ctrl + Enter를 눌러 도형의 모양을 자유롭게 바꿀 수 있게 깨뜨리는 기능'
+  }
+];
+
+const PATTERNS = [
+  {
+    no: '01', tag: 'INSTRUCTION', title: 'Turning Off Options', koTitle: '옵션 끄고 그리기',
+    examples: [
+      ['Turn off the stroke color and just draw the rectangle.', '테두리 색은 끄고 그냥 직사각형을 그려보세요.'],
+      ['Turn off the grid and just draw lines freely.', '그리드를 끄고 그냥 선을 자유롭게 그려보세요.']
+    ],
+    quizKo: '브러시 효과를 끄고 그냥 동그라미를 그려보세요.',
+    answerParts: [{text:'Turn off', key:true}, {text:'the brush effect and just draw a circle.', key:false}]
+  },
+  {
+    no: '02', tag: 'SHORTCUT', title: 'Converting Functions', koTitle: '단축키로 기능 전환하기',
+    examples: [
+      ['Convert this rectangle into curves by pressing Ctrl and Enter together.', 'Ctrl과 Enter를 같이 눌러서 이 사각형을 커브로 변환해 보세요.'],
+      ['Convert this line into a shape by pressing Alt and Enter together.', 'Alt와 Enter를 같이 눌러서 이 선을 도형으로 변환해 보세요.']
+    ],
+    quizKo: 'Ctrl과 Enter를 같이 눌러서 이 동그라미를 커브로 변환해 보세요.',
+    answerParts: [{text:'Convert', key:true}, {text:'this circle into curves by pressing Ctrl and Enter together.', key:false}]
+  },
+  {
+    no: '03', tag: 'GUIDE', title: 'Checking the Mouse Cursor', koTitle: '마우스 커서 모양 확인하기',
+    examples: [
+      ['If you move your mouse near the bottom center node, the cursor will change into a double-headed arrow.', '가운데 아래 점 근처로 마우스를 옮기면 커서가 양쪽 화살표 모양으로 바뀔 거예요.'],
+      ['If you move your mouse near the handle, the cursor will change into a curved arrow.', '핸들 근처로 마우스를 옮기면 커서가 회전 화살표 모양으로 바뀔 거예요.']
+    ],
+    quizKo: '모서리 근처로 마우스를 옮기면 커서가 양쪽 화살표 모양으로 바뀔 거예요.',
+    answerParts: [{text:'If you move your mouse near the corner, the cursor will change into a', key:false}, {text:'double-headed arrow.', key:true}]
+  },
+  {
+    no: '04', tag: 'PRAISE', title: 'Praising Visual Changes', koTitle: '시각적 변화 칭찬하기',
+    examples: [
+      ['You added color this time, so it looks much more realistic.', '이번에 색을 넣으시니까 훨씬 더 사실적으로 보이네요!'],
+      ['You added some shadows, so it looks much more 3D.', '그림자를 좀 넣으시니까 훨씬 더 입체감 있어 보이네요!']
+    ],
+    quizKo: '디테일을 추가하시니까 훨씬 더 멋져 보이네요!',
+    answerParts: [{text:'You added details, so it looks much cooler!', key:false}]
+  }
+];
+
+let activeLesson = null;
+let currentPart = 0;
+let partProgress = [];
+let revealMap = [];
+let part3Sections = [];
+let pendingSectionScroll = null;
+
+function renderHome() {
+  activeLesson = null;
+  document.title = 'English Diploma';
+  app.innerHTML = `
+    <main class="list-page">
+      <div class="eyebrow">ENGLISH DIPLOMA</div>
+      <h1>Diploma Course</h1>
+      <p class="lead">화살표 버튼 또는 키보드 방향키를 사용하여 페이지를 넘길 수 있습니다.</p>
+      <section class="lesson-grid" aria-label="Diploma lesson list">
+        ${Array.from({length:12}, (_,i) => {
+          const n = i + 1;
+          const active = n === 1;
+          return `
+            <button class="lesson-card ${active ? 'active' : 'disabled'}" ${active ? 'data-lesson="1"' : 'disabled'}>
+              <strong>DIPLOMA ${String(n).padStart(2,'0')}</strong>
+              <span class="meta">${active ? 'Design a 3D Room & Handle Audio Problems' : ' '}</span>
+              <span class="arrow-dot">${active ? '→' : '·'}</span>
+            </button>`;
+        }).join('')}
+      </section>
+    </main>`;
+  const first = app.querySelector('[data-lesson="1"]');
+  if (first) first.addEventListener('click', renderLesson);
+}
+
+function langCard(en, ko, extra='') {
+  return `<article class="language-card ${extra} reveal" data-reveal><p class="en">${en}</p><p class="ko">${ko}</p></article>`;
+}
+
+function bubble(role, en, ko, note='') {
+  return `
+    <div class="chat-row ${role} reveal" data-reveal>
+      <article class="bubble">
+        <div class="speaker">${role === 'teacher' ? 'Teacher' : 'Student'}</div>
+        ${note ? `<div class="action-note">${note}</div>` : ''}
+        <div class="en">${en}</div>
+        <div class="ko">${ko}</div>
+      </article>
+    </div>`;
+}
+
+function renderPattern(p) {
+  return `
+    <section class="pattern-section" id="pattern-${p.no}">
+      <h3 class="pattern-subtitle reveal" data-reveal><span class="tag">${p.no} · ${p.tag}</span>${p.title}<br><span style="font-size:14px;color:#ffffff;font-weight:400;">${p.koTitle}</span></h3>
+      <div class="content-stack">
+        <article class="language-card reveal" data-reveal>
+          <span class="example-label">Example 1</span>
+          <p class="en">${p.examples[0][0]}</p>
+          <p class="ko">${p.examples[0][1]}</p>
+        </article>
+        <article class="language-card reveal" data-reveal>
+          <span class="example-label">Example 2</span>
+          <p class="en">${p.examples[1][0]}</p>
+          <p class="ko">${p.examples[1][1]}</p>
+        </article>
+        <article class="quiz-card reveal" data-reveal role="button" tabindex="0" aria-label="Mini quiz answer reveal">
+          <span class="quiz-label">Mini Quiz</span>
+          <div class="masked-answer">
+            ${p.answerParts.map(part => part.key
+              ? `<span class="answer-keyword">${part.text}</span>`
+              : `<span class="mask">${part.text}</span>`).join(' ')}
+          </div>
+          <p class="ko" style="margin-top:10px;">${p.quizKo}</p>
+        </article>
+      </div>
+    </section>`;
+}
+
+function renderLesson() {
+  activeLesson = 1;
+  currentPart = 0;
+  document.title = 'DIPLOMA 01 · Design a 3D Room & Handle Audio Problems';
+
+  app.innerHTML = `
+    <main class="lesson-view">
+      <header class="toolbar">
+        <div class="toolbar-left">
+          <button class="toolbtn" id="homeBtn" title="목차로"><span>←</span><span class="label">목차</span></button>
+        </div>
+        <div class="title-wrap">
+          <div class="viewer-title">DIPLOMA 01</div>
+          <div class="page-count" id="partCount">PART 1 / 3</div>
+        </div>
+        <div class="toolbar-right">
+          <button class="toolbtn" id="restartBtn"><span>↻</span><span class="label">처음부터</span></button>
+        </div>
+      </header>
+
+      <button class="navbtn prev" id="prevBtn" aria-label="이전">‹</button>
+      <button class="navbtn next" id="nextBtn" aria-label="다음">›</button>
+      <div class="progress-pill" id="progressPill">방향키 또는 화살표 버튼으로 진행</div>
+
+      <div class="deck" id="deck">
+        <section class="part" id="part-1" data-part="0">
+          <div class="part-inner">
+            <div class="part-intro part-intro-static">
+              <div class="part-kicker">PART 01</div>
+              <h2>Key Design Terms</h2>
+              <p class="part-description">영문 용어와 국문 설명을 한 세트씩 확인합니다.</p>
+            </div>
+            <div class="content-stack">
+              ${TERMS.map(t => langCard(t.en, t.ko, 'term-card')).join('')}
+            </div>
+          </div>
+        </section>
+
+        <section class="part" id="part-2" data-part="1">
+          <div class="part-inner">
+            <div class="part-intro reveal" data-reveal>
+              <div class="part-kicker">PART 02</div>
+              <h2>Classroom Small Talk</h2>
+              <p class="part-description">Teacher는 왼쪽 흰색, Student는 오른쪽 노란색 말풍선으로 구분됩니다.</p>
+            </div>
+            <div class="content-stack">
+              <aside class="notice-card reveal" data-reveal>
+                <span class="notice-label">Brainstorming</span>
+                <div class="en">Let's warm up our brains and speak in English before we start drawing!</div>
+                <div class="ko">본격적으로 그리기 전에 내 방을 상상하며 입을 열어봅시다!</div>
+              </aside>
+
+              <div class="situation-title reveal" data-reveal>Situation 1: “What's in your room?”<small>내 방 가구 소개하기</small></div>
+              ${bubble('teacher', 'Imagine your own room. What do you have in your room?', '여러분의 방을 상상해 보세요. 방 안에 무엇이 있나요?')}
+              <div class="chat-row student reveal" data-reveal data-step-group="room-first-answer">
+                <article class="bubble">
+                  <div class="speaker">Student</div>
+                  <div class="en">In my room, I have a <span class="slot">[ Furniture 1 ]</span> and a <span class="slot">[ Furniture 2 ]</span>.</div>
+                  <div class="ko">제 방에는 [ 가구 1 ]과 [ 가구 2 ]가 있어요!</div>
+                </article>
+              </div>
+              <aside class="hint-box reveal" data-reveal data-step-group="room-first-answer">
+                <strong>💡 Word Hint Box · 가구/소품 단어 힌트</strong>
+                <div class="hint-list">
+                  ${[['Desk','책상'],['Bed','침대'],['Chair','의자'],['Closet','옷장'],['Bookshelf','책장'],['Side table','협탁'],['Lamp','조명'],['Cushion','쿠션']].map(([en,ko]) => `<span class="hint-chip">${en}<span>${ko}</span></span>`).join('')}
+                </div>
+              </aside>
+              ${bubble('teacher', 'That sounds nice! Do you have a pillow on your bed?', '좋네요! 침대 위에 베개가 있나요?')}
+              ${bubble('student', 'Yes! I have a <span class="slot">[ Shape / Color ]</span> pillow on my bed.', '네! 침대 위에 [ 모양/색상 ] 베개가 있어요.')}
+
+              <div class="situation-title reveal" data-reveal>Situation 2: Problem Solving<small>돌발 상황 해결</small></div>
+              <aside class="notice-card reveal" data-reveal>
+                <span class="notice-label">Mission</span>
+                <div class="en">Your student's microphone suddenly stops working during class! Handle the situation calmly as a teacher using the script below.</div>
+                <div class="ko">수업 도중 갑자기 학생의 마이크 소리가 들리지 않는 상황입니다. 아래 스크립트로 문제를 해결해 보세요.</div>
+              </aside>
+              ${bubble('teacher', "Zack, I can't hear you! Do you have a headset? If you do, can you click an emoji?", '잭, 목소리가 안 들려요! 혹시 헤드셋 가지고 있나요? 있다면 이모지를 눌러줄 수 있나요?')}
+              ${bubble('student', '💬 “My microphone is not working, and I don’t have a headset.”', '제 마이크가 작동하지 않고, 헤드셋도 없어요.', 'Types in chat')}
+              ${bubble('teacher', 'No problem, we can use the chat today! Can you click an emoji if you can hear me?', '괜찮아요, 오늘은 채팅창을 쓰면 됩니다! 선생님 말이 잘 들린다면 이모지를 눌러줄 수 있나요?')}
+              ${bubble('student', '👍', '이모지를 클릭합니다.', 'Click emoji')}
+              ${bubble('teacher', "Perfect! Let's check your mic setup after class. For now, let’s keep drawing!", '좋아요! 수업 끝나고 마이크 설정을 같이 체크해 봐요. 지금은 계속 그려봅시다!')}
+            </div>
+          </div>
+        </section>
+
+        <section class="part" id="part-3" data-part="2">
+          <div class="part-inner">
+            <div class="part-intro reveal" data-reveal>
+              <div class="part-kicker">PART 03</div>
+              <h2>Classroom Master Patterns</h2>
+              <p class="part-description">각 패턴은 Example 1 → Example 2 → Mini Quiz 순서로 등장합니다.</p>
+            </div>
+            ${PATTERNS.map(renderPattern).join('')}
+            <div class="complete-card reveal" data-reveal>
+              <strong>DIPLOMA 01 Complete</strong>
+              <span>모든 패턴을 확인했습니다.</span>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>`;
+
+  bindLessonEvents();
+  buildRevealMap();
+  updateState();
+}
+
+function buildRevealMap() {
+  revealMap = [...document.querySelectorAll('.part')].map(part => {
+    const elements = [...part.querySelectorAll('[data-reveal]')];
+    const steps = [];
+    const grouped = new Map();
+
+    elements.forEach(el => {
+      const groupName = el.dataset.stepGroup;
+      if (groupName) {
+        if (!grouped.has(groupName)) {
+          const step = [];
+          grouped.set(groupName, step);
+          steps.push(step);
+        }
+        grouped.get(groupName).push(el);
+      } else {
+        steps.push([el]);
+      }
+    });
+    return steps;
+  });
+
+  const part3Steps = revealMap[2] || [];
+  part3Sections = [...document.querySelectorAll('#part-3 .pattern-section')].map(section => {
+    const sectionReveals = [...section.querySelectorAll('[data-reveal]')];
+    const indexes = sectionReveals
+      .map(el => part3Steps.findIndex(step => step.includes(el)))
+      .filter(index => index >= 0);
+    return {
+      id: section.id,
+      start: Math.min(...indexes),
+      end: Math.max(...indexes) + 1
+    };
+  });
+
+  const completeCard = document.querySelector('#part-3 .complete-card');
+  if (completeCard) {
+    const completeIndex = part3Steps.findIndex(step => step.includes(completeCard));
+    if (completeIndex >= 0) {
+      part3Sections.push({id: 'part-3-complete', start: completeIndex, end: completeIndex + 1, element: completeCard});
+    }
+  }
+
+  partProgress = revealMap.map(() => 0);
+  pendingSectionScroll = null;
+  applyAllRevealStates();
+}
+
+function bindLessonEvents() {
+  document.getElementById('homeBtn').addEventListener('click', renderHome);
+  document.getElementById('restartBtn').addEventListener('click', restartLesson);
+  document.getElementById('nextBtn').addEventListener('click', nextStep);
+  document.getElementById('prevBtn').addEventListener('click', prevStep);
+
+  document.querySelectorAll('.quiz-card').forEach(card => {
+    const toggle = () => card.classList.toggle('revealed');
+    card.addEventListener('click', toggle);
+    card.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        toggle();
+      }
+    });
+  });
+}
+
+function applyRevealState(partIndex) {
+  const steps = revealMap[partIndex] || [];
+  const progress = partProgress[partIndex] || 0;
+  steps.forEach((step, stepIndex) => {
+    const visible = stepIndex < progress;
+    step.forEach(el => {
+      el.classList.toggle('is-visible', visible);
+      if (!visible && el.classList.contains('quiz-card')) {
+        el.classList.remove('revealed');
+      }
+    });
+  });
+}
+
+function applyAllRevealStates() {
+  revealMap.forEach((_, i) => applyRevealState(i));
+}
+
+function getPart3SectionAtStart(progress) {
+  return part3Sections.find(section => section.start === progress) || null;
+}
+
+function getPart3SectionElement(section) {
+  if (!section) return null;
+  return section.element || document.getElementById(section.id);
+}
+
+function scrollToPart3Section(section) {
+  const target = getPart3SectionElement(section);
+  if (!target) return;
+  target.scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+function nextStep() {
+  if (!activeLesson) return;
+  const steps = revealMap[currentPart];
+  const progress = partProgress[currentPart];
+
+  if (currentPart === 2 && progress > 0) {
+    const nextSection = getPart3SectionAtStart(progress);
+    if (nextSection && pendingSectionScroll !== progress) {
+      pendingSectionScroll = progress;
+      scrollToPart3Section(nextSection);
+      updateState();
+      return;
+    }
+  }
+
+  if (progress < steps.length) {
+    pendingSectionScroll = null;
+    partProgress[currentPart] += 1;
+    applyRevealState(currentPart);
+    const shownStep = steps[progress];
+    const anchor = shownStep[shownStep.length - 1];
+    if (currentPart !== 2) {
+      requestAnimationFrame(() => keepVisible(anchor));
+    }
+    updateState();
+    return;
+  }
+
+  if (currentPart < revealMap.length - 1) {
+    pendingSectionScroll = null;
+    goToPart(currentPart + 1);
+  }
+}
+
+function prevStep() {
+  if (!activeLesson) return;
+  const progress = partProgress[currentPart];
+
+  if (currentPart === 2 && pendingSectionScroll !== null) {
+    const currentBoundary = pendingSectionScroll;
+    pendingSectionScroll = null;
+    const previousSection = [...part3Sections].reverse().find(section => section.end <= currentBoundary);
+    if (previousSection) {
+      scrollToPart3Section(previousSection);
+    } else {
+      document.getElementById('part-3').scrollIntoView({behavior:'smooth', block:'start'});
+    }
+    updateState();
+    return;
+  }
+
+  if (progress > 0) {
+    pendingSectionScroll = null;
+    partProgress[currentPart] -= 1;
+    applyRevealState(currentPart);
+    const remaining = partProgress[currentPart];
+    if (remaining > 0 && currentPart !== 2) {
+      const anchorStep = revealMap[currentPart][remaining - 1];
+      const anchor = anchorStep[anchorStep.length - 1];
+      requestAnimationFrame(() => keepVisible(anchor));
+    }
+    updateState();
+    return;
+  }
+
+  if (currentPart > 0) {
+    pendingSectionScroll = null;
+    const previousPart = currentPart - 1;
+    currentPart = previousPart;
+    partProgress[previousPart] = revealMap[previousPart].length;
+    applyRevealState(previousPart);
+    const target = document.querySelector(`[data-part="${previousPart}"]`);
+    target.scrollIntoView({behavior:'smooth', block:'start'});
+    updateState();
+  }
+}
+
+function goToPart(partIndex) {
+  pendingSectionScroll = null;
+  currentPart = partIndex;
+  applyRevealState(currentPart);
+  const target = document.querySelector(`[data-part="${partIndex}"]`);
+  target.classList.remove('entering');
+  void target.offsetWidth;
+  target.classList.add('entering');
+  target.scrollIntoView({behavior:'smooth', block:'start'});
+  updateState();
+}
+
+function keepVisible(el) {
+  if (!el) return;
+  const rect = el.getBoundingClientRect();
+  const viewportBottom = window.innerHeight - 86;
+  if (rect.bottom > viewportBottom || rect.top < 84) {
+    el.scrollIntoView({behavior:'smooth', block:'center'});
+  }
+}
+
+function restartLesson() {
+  pendingSectionScroll = null;
+  document.querySelectorAll('.quiz-card').forEach(el => el.classList.remove('revealed'));
+  partProgress = revealMap.map(() => 0);
+  applyAllRevealStates();
+  currentPart = 0;
+  document.getElementById('part-1').scrollIntoView({behavior:'smooth', block:'start'});
+  updateState();
+}
+
+function updateState() {
+  if (!activeLesson || !revealMap.length) return;
+  const partCount = document.getElementById('partCount');
+  const progress = document.getElementById('progressPill');
+  const prev = document.getElementById('prevBtn');
+  const next = document.getElementById('nextBtn');
+  const visible = partProgress[currentPart] || 0;
+  const total = revealMap[currentPart].length;
+
+  partCount.textContent = `PART ${currentPart + 1} / ${revealMap.length}`;
+  progress.textContent = pendingSectionScroll !== null
+    ? '다음 섹션 준비 · 방향키 또는 화살표 버튼'
+    : `${visible} / ${total} · 방향키 또는 화살표 버튼`;
+  prev.disabled = currentPart === 0 && visible === 0;
+  next.disabled = currentPart === revealMap.length - 1 && visible >= total;
+}
+
+window.addEventListener('keydown', e => {
+  if (!activeLesson) return;
+  const tag = document.activeElement?.tagName;
+  if (tag === 'INPUT' || tag === 'TEXTAREA') return;
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+    e.preventDefault();
+    nextStep();
+  }
+  if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+    e.preventDefault();
+    prevStep();
+  }
+  if (e.key === 'Escape') {
+    e.preventDefault();
+    renderHome();
+  }
+});
+
+renderHome();
+</script>
+</body>
+</html>
