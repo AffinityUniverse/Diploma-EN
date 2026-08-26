@@ -45,8 +45,12 @@
     --card: #ffffff;
     --card-text: #111111;
     --card-muted: #777777;
-    --yellow: #FFD84A;
-    --yellow-soft: #FFF5BF;
+    --yellow: #EDF5FA;
+    --yellow-soft: #F5F9FC;
+    --navy-2: #132A46;
+    --navy-3: #1B3A60;
+    --navy-4: #274D78;
+    --ice-blue: #EDF5FA;
     --radius: 22px;
     --shadow: 0 14px 40px rgba(0,0,0,.18);
     font-family: 'SpokaHanSansNeo', sans-serif;
@@ -67,31 +71,46 @@
     outline-offset: 4px;
   }
 
-  .app { min-height: 100vh; background: var(--bg); }
+  .app {
+    min-height: 100vh;
+    background:
+      radial-gradient(circle at 82% 12%, rgba(71,117,166,.30), transparent 28%),
+      linear-gradient(145deg, #0D1D32 0%, #102641 52%, #0D1D32 100%);
+  }
 
   /* ---------- COURSE LIST ---------- */
   .list-page {
+    position: relative;
+    isolation: isolate;
     width: min(1180px, calc(100% - 48px));
     margin: 0 auto;
-    padding: 74px 0 96px;
+    padding: 84px 0 104px;
   }
   .eyebrow {
-    color: rgba(255,255,255,.46);
-    font-size: 12px;
+    display: inline-flex;
+    align-items: center;
+    min-height: 28px;
+    padding: 0 11px;
+    border-radius: 999px;
+    background: rgba(237,245,250,.10);
+    border: 1px solid rgba(237,245,250,.16);
+    color: rgba(237,245,250,.78);
+    font-size: 11px;
     font-weight: 700;
     letter-spacing: .16em;
     text-transform: uppercase;
   }
   .list-page h1 {
-    margin: 12px 0 12px;
-    font-size: clamp(36px, 5vw, 60px);
-    line-height: 1.08;
+    margin: 16px 0 12px;
+    font-size: clamp(38px, 5vw, 62px);
+    line-height: 1.06;
     letter-spacing: -.045em;
     font-weight: 700;
+    text-shadow: 0 8px 30px rgba(0,0,0,.14);
   }
   .lead {
-    margin: 0 0 36px;
-    color: var(--muted);
+    margin: 0 0 40px;
+    color: rgba(237,245,250,.64);
     line-height: 1.75;
     font-size: 15px;
     font-weight: 400;
@@ -99,28 +118,38 @@
   .lesson-grid {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 14px;
+    gap: 16px;
   }
   .lesson-card {
     appearance: none;
     position: relative;
+    overflow: hidden;
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
     grid-template-areas: "title arrow" "meta arrow";
     column-gap: 22px;
-    row-gap: 2px;
+    row-gap: 3px;
     align-items: center;
-    min-height: 142px;
-    padding: 27px 28px;
-    border: 1px solid rgba(255,255,255,.06);
+    min-height: 146px;
+    padding: 28px 28px;
+    border: 1px solid rgba(255,255,255,.08);
     border-radius: 28px;
-    background: #ffffff;
+    background: rgba(255,255,255,.96);
     color: var(--card-text);
     text-align: left;
-    box-shadow: 0 10px 30px rgba(0,0,0,.12);
+    box-shadow: 0 14px 34px rgba(3,14,29,.16);
   }
-  .lesson-card.active { cursor: pointer; transition: transform .18s ease, box-shadow .18s ease; }
-  .lesson-card.active:hover { transform: translateY(-3px); box-shadow: 0 16px 38px rgba(0,0,0,.18); }
+  .lesson-card.active {
+    cursor: pointer;
+    background: linear-gradient(145deg, #ffffff 0%, #f5f9fc 100%);
+    border-color: rgba(123,158,194,.28);
+    transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+  }
+  .lesson-card.active:hover {
+    transform: translateY(-4px);
+    border-color: rgba(123,158,194,.48);
+    box-shadow: 0 20px 46px rgba(3,14,29,.22);
+  }
   .lesson-card .arrow-dot {
     grid-area: arrow;
     width: 54px;
@@ -128,7 +157,7 @@
     border-radius: 50%;
     display: grid;
     place-items: center;
-    background: #111111;
+    background: #173457;
     color: #ffffff;
     font-size: 26px;
     line-height: 1;
@@ -151,14 +180,15 @@
     font-weight: 400;
   }
   .lesson-card.disabled {
-    background: rgba(255,255,255,.72);
-    box-shadow: none;
+    background: rgba(255,255,255,.78);
+    border-color: rgba(255,255,255,.07);
+    box-shadow: 0 9px 24px rgba(3,14,29,.08);
   }
   .lesson-card.disabled strong { color: #4d4d4d; }
   .lesson-card.disabled .meta { color: #999999; }
   .lesson-card.disabled .arrow-dot {
-    background: #d9d9d9;
-    color: #ffffff;
+    background: #DCE6EF;
+    color: #8EA2B5;
     font-size: 18px;
   }
 
@@ -341,7 +371,7 @@
     border-radius: 0 20px 20px 20px;
   }
   .student .bubble {
-    background: var(--yellow);
+    background: #EDF5FA;
     border-radius: 20px 0 20px 20px;
   }
   .speaker {
@@ -721,7 +751,7 @@ function renderLesson() {
             <div class="part-intro reveal" data-reveal>
               <div class="part-kicker">PART 02</div>
               <h2>Classroom Small Talk</h2>
-              <p class="part-description">Teacher는 왼쪽 흰색, Student는 오른쪽 노란색 말풍선으로 구분됩니다.</p>
+              <p class="part-description">Teacher는 왼쪽 흰색, Student는 오른쪽 연한 블루 말풍선으로 구분됩니다.</p>
             </div>
             <div class="content-stack">
               <aside class="notice-card reveal" data-reveal>
