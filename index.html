@@ -452,6 +452,7 @@
     font-weight: 400;
   }
   .masked-answer {
+    position: relative;
     display: block;
     font-size: clamp(19px, 2.2vw, 27px);
     line-height: 1.55;
@@ -460,28 +461,38 @@
     word-spacing: normal;
   }
   .masked-answer > span { display: inline; }
-  .answer-keyword { color: #111111; }
+  .answer-keyword {
+    display: inline-block;
+    white-space: nowrap;
+    color: #111111;
+    background: #ffffff;
+    position: relative;
+    z-index: 1;
+    padding: 0 .04em;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+  }
   .mask {
     position: relative;
     display: inline;
     color: transparent;
     background: #111111;
-    border-radius: 5px;
+    border-radius: 6px;
     padding: 0 .10em;
     -webkit-box-decoration-break: clone;
     box-decoration-break: clone;
     transition: background .22s ease, color .22s ease;
   }
-  .mask::after {
-    content: '?';
+  .quiz-question {
     position: absolute;
-    left: 50%;
-    top: 50%;
+    left: 0;
+    top: 0;
     transform: translate(-50%, -50%);
     color: #ffffff;
     font-size: .72em;
     line-height: 1;
     font-weight: 700;
+    z-index: 4;
     pointer-events: none;
   }
   .quiz-card.revealed .mask {
@@ -490,7 +501,13 @@
     padding-left: 0;
     padding-right: 0;
   }
-  .quiz-card.revealed .mask::after { content: none; }
+  .quiz-card.revealed .answer-keyword {
+    color: #111111;
+    background: transparent;
+    padding-left: 0;
+    padding-right: 0;
+  }
+  .quiz-card.revealed .quiz-question { display: none; }
 
   /* ---------- NAV ---------- */
   .navbtn {
@@ -569,68 +586,7 @@
 
 <script>
 const app = document.getElementById('app');
-
-const TERMS = [
-  {
-    en: 'Perspective',
-    ko: '원근법 · 평면에 깊이감과 공간감을 주는 기법'
-  },
-  {
-    en: 'Tilt',
-    ko: '기울이기 · 도형을 비틀어 입체감을 주는 기능'
-  },
-  {
-    en: 'Align Center',
-    ko: '가운데 정렬 · 오브젝트의 중심축을 맞추는 기능'
-  },
-  {
-    en: 'Stroke',
-    ko: '테두리 선 · 도형의 바깥 선 색상 및 두께'
-  },
-  {
-    en: 'Convert to Curves',
-    ko: '곡선 변환 · Ctrl + Enter를 눌러 도형의 모양을 자유롭게 바꿀 수 있게 깨뜨리는 기능'
-  }
-];
-
-const PATTERNS = [
-  {
-    no: '01', tag: 'INSTRUCTION', title: 'Turning Off Options', koTitle: '옵션 끄고 그리기',
-    examples: [
-      ['Turn off the stroke color and just draw the rectangle.', '테두리 색은 끄고 그냥 직사각형을 그려보세요.'],
-      ['Turn off the grid and just draw lines freely.', '그리드를 끄고 그냥 선을 자유롭게 그려보세요.']
-    ],
-    quizKo: '브러시 효과를 끄고 그냥 동그라미를 그려보세요.',
-    answerParts: [{text:'Turn off', key:true}, {text:'the brush effect and just draw a circle.', key:false}]
-  },
-  {
-    no: '02', tag: 'SHORTCUT', title: 'Converting Functions', koTitle: '단축키로 기능 전환하기',
-    examples: [
-      ['Convert this rectangle into curves by pressing Ctrl and Enter together.', 'Ctrl과 Enter를 같이 눌러서 이 사각형을 커브로 변환해 보세요.'],
-      ['Convert this line into a shape by pressing Alt and Enter together.', 'Alt와 Enter를 같이 눌러서 이 선을 도형으로 변환해 보세요.']
-    ],
-    quizKo: 'Ctrl과 Enter를 같이 눌러서 이 동그라미를 커브로 변환해 보세요.',
-    answerParts: [{text:'Convert', key:true}, {text:'this circle into curves by pressing Ctrl and Enter together.', key:false}]
-  },
-  {
-    no: '03', tag: 'GUIDE', title: 'Checking the Mouse Cursor', koTitle: '마우스 커서 모양 확인하기',
-    examples: [
-      ['If you move your mouse near the bottom center node, the cursor will change into a double-headed arrow.', '가운데 아래 점 근처로 마우스를 옮기면 커서가 양쪽 화살표 모양으로 바뀔 거예요.'],
-      ['If you move your mouse near the handle, the cursor will change into a curved arrow.', '핸들 근처로 마우스를 옮기면 커서가 회전 화살표 모양으로 바뀔 거예요.']
-    ],
-    quizKo: '모서리 근처로 마우스를 옮기면 커서가 양쪽 화살표 모양으로 바뀔 거예요.',
-    answerParts: [{text:'If you move your mouse near the corner, the cursor will change into a', key:false}, {text:'double-headed arrow.', key:true}]
-  },
-  {
-    no: '04', tag: 'PRAISE', title: 'Praising Visual Changes', koTitle: '시각적 변화 칭찬하기',
-    examples: [
-      ['You added color this time, so it looks much more realistic.', '이번에 색을 넣으시니까 훨씬 더 사실적으로 보이네요!'],
-      ['You added some shadows, so it looks much more 3D.', '그림자를 좀 넣으시니까 훨씬 더 입체감 있어 보이네요!']
-    ],
-    quizKo: '디테일을 추가하시니까 훨씬 더 멋져 보이네요!',
-    answerParts: [{text:'You added details, so it looks much cooler!', key:false}]
-  }
-];
+const LESSONS = {"1":{"topic":"Design a 3D Room & Handle Audio Problems","terms":[["Perspective","원근법 · 평면에 깊이감과 공간감을 주는 기법"],["Tilt","기울이기 · 도형을 비틀어 입체감을 주는 기능"],["Align Center","가운데 정렬 · 오브젝트의 중심축을 맞추는 기능"],["Stroke","테두리 선 · 도형의 바깥 선 색상 및 두께"],["Convert to Curves","곡선 변환 · Ctrl + Enter를 눌러 도형의 모양을 자유롭게 바꿀 수 있게 깨뜨리는 기능"]],"brainstormKo":"본격적으로 그리기 전에 내 방을 상상하며 입을 열어봅시다!","s1":{"title":"“What's in your room?”","subtitle":"내 방 가구 소개하기","messages":[{"role":"teacher","en":"Imagine your own room. What do you have in your room?","ko":"여러분의 방을 상상해 보세요. 방 안에 무엇이 있나요?"},{"role":"student","en":"In my room, I have a <span class=\"slot\">[ Furniture 1 ]</span> and a <span class=\"slot\">[ Furniture 2 ]</span>.","ko":"제 방에는 [ 가구 1 ]과 [ 가구 2 ]가 있어요!","group":"s1-hint"},{"role":"teacher","en":"That sounds nice! Do you have a pillow on your bed?","ko":"좋네요! 침대 위에 베개가 있나요?"},{"role":"student","en":"Yes! I have a <span class=\"slot\">[ Shape / Color ]</span> pillow on my bed.","ko":"네! 침대 위에 [ 모양/색상 ] 베개가 있어요."}],"hint":{"after":1,"group":"s1-hint","label":"가구/소품 단어 힌트","items":[["Desk","책상"],["Bed","침대"],["Chair","의자"],["Closet","옷장"],["Bookshelf","책장"],["Side table","협탁"],["Lamp","조명"],["Cushion","쿠션"]]}},"s2":{"title":"Problem Solving","subtitle":"돌발 상황 해결","missionEn":"Your student's microphone suddenly stops working during class! Handle the situation calmly as a teacher using the script below.","missionKo":"수업 도중 갑자기 학생의 마이크 소리가 들리지 않는 상황입니다. 아래 스크립트로 문제를 해결해 보세요.","messages":[{"role":"teacher","en":"Zack, I can't hear you! Do you have a headset? If you do, can you click an emoji?","ko":"잭, 목소리가 안 들려요! 혹시 헤드셋 가지고 있나요? 있다면 이모지를 눌러줄 수 있나요?"},{"role":"student","en":"💬 “My microphone is not working, and I don’t have a headset.”","ko":"제 마이크가 작동하지 않고, 헤드셋도 없어요.","note":"Types in chat"},{"role":"teacher","en":"No problem, we can use the chat today! Can you click an emoji if you can hear me?","ko":"괜찮아요, 오늘은 채팅창을 쓰면 됩니다! 선생님 말이 잘 들린다면 이모지를 눌러줄 수 있나요?"},{"role":"student","en":"👍","ko":"이모지를 클릭합니다.","note":"Click emoji"},{"role":"teacher","en":"Perfect! Let's check your mic setup after class. For now, let’s keep drawing!","ko":"좋아요! 수업 끝나고 마이크 설정을 같이 체크해 봐요. 지금은 계속 그려봅시다!"}]},"patterns":[{"tag":"INSTRUCTION","title":"Turning Off Options","koTitle":"옵션 끄고 그리기","examples":[["Turn off the stroke color and just draw the rectangle.","테두리 색은 끄고 그냥 직사각형을 그려보세요."],["Turn off the grid and just draw lines freely.","그리드를 끄고 그냥 선을 자유롭게 그려보세요."]],"quizKo":"브러시 효과를 끄고 그냥 동그라미를 그려보세요.","answer":"Turn off the brush effect and just draw a circle."},{"tag":"SHORTCUT","title":"Converting Functions","koTitle":"단축키로 기능 전환하기","examples":[["Convert this rectangle into curves by pressing Ctrl and Enter together.","Ctrl과 Enter를 같이 눌러서 이 사각형을 커브로 변환해 보세요."],["Convert this line into a shape by pressing Alt and Enter together.","Alt와 Enter를 같이 눌러서 이 선을 도형으로 변환해 보세요."]],"quizKo":"Ctrl과 Enter를 같이 눌러서 이 동그라미를 커브로 변환해 보세요.","answer":"Convert this circle into curves by pressing Ctrl and Enter together."},{"tag":"GUIDE","title":"Checking the Mouse Cursor","koTitle":"마우스 커서 모양 확인하기","examples":[["If you move your mouse near the bottom center node, the cursor will change into a double-headed arrow.","가운데 아래 점 근처로 마우스를 옮기면 커서가 양쪽 화살표 모양으로 바뀔 거예요."],["If you move your mouse near the handle, the cursor will change into a curved arrow.","핸들 근처로 마우스를 옮기면 커서가 회전 화살표 모양으로 바뀔 거예요."]],"quizKo":"모서리 근처로 마우스를 옮기면 커서가 양쪽 화살표 모양으로 바뀔 거예요.","answer":"If you move your mouse near the corner, the cursor will change into a double-headed arrow."},{"tag":"PRAISE","title":"Praising Visual Changes","koTitle":"시각적 변화 칭찬하기","examples":[["You added color this time, so it looks much more realistic.","이번에 색을 넣으시니까 훨씬 더 사실적으로 보이네요!"],["You added some shadows, so it looks much more 3D.","그림자를 좀 넣으시니까 훨씬 더 입체감 있어 보이네요!"]],"quizKo":"디테일을 추가하시니까 훨씬 더 멋져 보이네요!","answer":"You added details, so it looks much cooler!"}]},"2":{"topic":"Design a High-Angle Street View & Handle Program Crashes","terms":[["High-angle view","조감도 시점 (하늘에서 새처럼 아래를 내려다보는 시점)"],["Arrange","순서 정렬 (레이어의 순서를 맨 앞(Front)이나 맨 뒤(Back)로 정렬하는 기능)"],["Pathfinder","도형 연산 (두 개 이상의 도형을 합치거나 깎아내어 새로운 형태를 만드는 기능)"],["Duplicate","복제하기 (단축키나 드래그를 이용해 오브젝트를 똑같이 복제하는 기능)"],["Align","정렬하기 (오브젝트들을 왼쪽, 가운데, 오른쪽 등 기준선에 맞춰 깔끔하게 정렬하는 기능)"]],"brainstormKo":"","s1":{"title":"“What can you see from the sky?”","subtitle":"조감도 거리 풍경 상상하기","messages":[{"role":"teacher","en":"Imagine we are flying in the sky like birds, looking straight down at the street! What can you see from up there?","ko":"우리가 새처럼 하늘을 날며 거리를 내려다본다고 상상해 보세요! 저 아래 무엇이 보이나요?"},{"role":"student","en":"I can see a <span class=\"slot\">[ 오브젝트 1 ]</span> and a very small <span class=\"slot\">[ 오브젝트 2 ]</span>.","ko":"[ 오브젝트 1 ]과 아주 작은 [ 오브젝트 2 ]가 보여요.","group":"s1-hint"},{"role":"teacher","en":"What kind of exciting story is happening on your street?","ko":"여러분 거리에서는 어떤 흥미진진한 이야기가 펼쳐지고 있나요?"},{"role":"student","en":"A <span class=\"slot\">[ 동물/캐릭터 ]</span> is <span class=\"slot\">[ 행동 ]</span> on the street!","ko":"[ 동물/캐릭터 ]가 거리에서 [ 행동 ]하고 있어요!"}],"hint":{"after":1,"group":"s1-hint","label":"거리 요소 및 스토리텔링 단어 힌트","items":[["Building","건물"],["Car","자동차"],["Crosswalk","횡단보도"],["Tree","나무"],["Giant pig","거대 돼지"],["Lost puppy","길 잃은 강아지"],["Cute cat","귀여운 고양이"],["Exploring","탐험하는 중"],["Invading","침공하는 중"],["Roaming","배회하는 중"]]}},"s2":{"title":"Real-world Problem Solving","subtitle":"돌발 상황 해결","missionEn":"Your student's program suddenly closes unexpectedly while drawing! Handle the situation calmly, guide them to open the recovery file, and save their work.","missionKo":"수업 도중 갑자기 학생의 프로그램이 꺼진 상황입니다. 아래 스크립트로 차분하게 복구 파일을 열고 작업 내용을 저장하도록 안내해 보세요.","messages":[{"role":"teacher","en":"Oh, no! It looks like your program closed unexpectedly. Don't worry, let's open it again.","ko":"어? 프로그램이 갑자기 꺼진 것 같네요. 걱정하지 말고 다시 열어봐요."},{"role":"student","en":"“Teacher, it asks if I want to restore the file. Should I click Yes?”","ko":"프로그램을 열며: 선생님, 파일을 복구할 거냐고 물어봐요. 'Yes'를 누를까요?","note":"Opens the program"},{"role":"teacher","en":"Yes, please click “Yes”! Now press Ctrl + S right away to save your work.","ko":"네, 'Yes'를 눌러요! 그리고 작업한 내용을 바로 저장하게 지금 Ctrl + S를 눌러주세요."},{"role":"student","en":"Okay, I saved it! Everything is safe now.","ko":"네, 저장했어요! 이제 다 안전하게 있어요."}]},"patterns":[{"tag":"INSTRUCTION","title":"Sending Objects Back/Forward","koTitle":"오브젝트 앞/뒤로 보내기","examples":[["Send the rectangle to the back so we can see the text.","텍스트가 보이도록 직사각형을 맨 뒤로 보내보세요."],["Send this small circle to the front so we can see the button detail.","단추 디테일이 보이도록 이 작은 원을 맨 앞으로 보내보세요."]],"quizKo":"캐릭터가 보이게 이 그림자를 뒤로 보내보세요.","answer":"Send this shadow to the back so we can see the character."},{"tag":"SHORTCUT","title":"Duplicating with Selection","koTitle":"선택하며 복제하기","examples":[["Duplicate this star shape by holding Ctrl and dragging it.","Ctrl을 누른 채로 드래그해서 이 별 모양을 복제해 보세요."],["Duplicate the chair by holding Cmd and dragging it on your Mac.","맥에서는 Cmd을 누른 채로 드래그해서 의자를 복제해 보세요."]],"quizKo":"Ctrl을 누른 채로 드래그해서 이 텍스트를 복제해 보세요.","answer":"Duplicate this text by holding Ctrl and dragging it."},{"tag":"GUIDE","title":"Combining Two Shapes","koTitle":"도형 합치기/연산","examples":[["Select both shapes and click the 'Add' button to combine them.","두 도형을 모두 선택하고 'Add' 버튼을 눌러서 합쳐보세요."],["Select both shapes and click the 'Subtract' button to cut out the front part.","두 도형을 모두 선택하고 'Subtract' 버튼을 눌러 앞쪽 부분을 잘라내 보세요."]],"quizKo":"두 도형을 모두 선택하고 'Divide' 버튼을 눌러서 조각으로 나눠보세요.","answer":"Select both shapes and click the 'Divide' button to separate them into pieces."},{"tag":"PRAISE","title":"Praising Neat Alignment","koTitle":"깔끔한 정렬 칭찬하기","examples":[["You aligned these shapes to the center, so the layout looks much more organized.","이 도형들을 가운데 정렬하니까 레이아웃이 훨씬 더 깔끔해 보이네요!"],["You aligned the text to the left, so the layout looks much more professional.","텍스트를 왼쪽 정렬하니까 레이아웃이 훨씬 더 전문적으로 보이네요!"]],"quizKo":"도형들을 정렬하니까 레이아웃이 완벽해 보이네요!","answer":"You aligned the shapes, so the layout looks perfect!"}]},"3":{"topic":"Bunny Cafe & Advanced Layer Control","terms":[["Layer Order","레이어 순서 (오브젝트가 겹쳐진 순서. 맨 뒤(Back)에서부터 맨 앞(Front)으로 쌓아 올리는 작업 방식)"],["Compound Shape","비파괴 도형 합치기 (Alt를 누른 채 도형을 합쳐, 외관은 하나지만 언제든 더블클릭하여 각 요소를 수정할 수 있는 기능)"],["Clipping Mask (Place Inside)","클리핑 마스크 (오브젝트를 잘라내어 대상 레이어 안으로 넣어 고정하는 마스킹 기능)"],["Low-Angle View","로우 앵글 시점 (아래에서 위를 올려다보는 시점. 아래쪽은 크게, 위쪽 멀리는 작게 보여 공간감을 강조)"],["Quick FX","빠른 효과 (Outer Glow, Gaussian Blur 등 오브젝트에 은은한 빛이나 흐림 효과를 빠르게 적용하는 스타일 패널)"]],"brainstormKo":"","s1":{"title":"“What does your bunny eat at the cafe?”","subtitle":"카페 속 토끼 음식 상상하기","messages":[{"role":"teacher","en":"Imagine our bunny is sitting in a cute cafe! What is your bunny drinking or eating right now?","ko":"우리 토끼가 귀여운 카페에 앉아 있다고 상상해 보세요! 지금 토끼가 무엇을 먹거나 마시고 있나요?"},{"role":"student","en":"My bunny is drinking <span class=\"slot\">[ 음료 ]</span> and eating <span class=\"slot\">[ 디저트/음식 ]</span>!","ko":"제 토끼는 [ 음료 ]를 마시고 [ 디저트/음식 ]을 먹고 있어요!","group":"s1-hint"},{"role":"teacher","en":"Oh, wow! What a fun idea! What made you choose that?","ko":"와, 재미있는 아이디어네요! 왜 그걸 골랐나요?"},{"role":"student","en":"Because they’re my bunny's favorite! / Because they look so delicious!","ko":"토끼가 제일 좋아하는 음식이라서요! / 너무 맛있어 보여서요!"}],"hint":{"after":1,"group":"s1-hint","label":"디저트 & 음료 단어 힌트","items":[["Hot chocolate","핫초코"],["Carrot cake","당근 케이크"],["Cola/Coke","콜라"],["Hamburger / French fries","햄버거 / 감자튀김"],["Iced Matcha Latte","아이스 말차 라떼"],["Mint Chocolate Cookie","민트초코 쿠키"]]}},"s2":{"title":"Problem Solving","subtitle":"문제 해결","missionEn":"A student's layer order gets messy while drawing the bunny and background elements! Guide them calmly to send objects back or bring them forward using shortcuts.","missionKo":"토끼와 배경을 그리다가 레이어 순서가 꼬인 상황입니다. 단축키를 사용해 순서를 조정하도록 차분하게 안내해 보세요.","messages":[{"role":"teacher","en":"Oh, look! The bunny's body is in front of the table. Let's send it back using a shortcut!","ko":"어, 보세요! 토끼 몸통이 탁자 앞에 있네요. 단축키로 뒤로 보내봐요!"},{"role":"student","en":"How do I do that?","ko":"어떻게 하나요?"},{"role":"teacher","en":"Select the body, hold down Ctrl/Cmd, and press the left bracket [ key to send it back!","ko":"몸통을 선택하고 Ctrl/Cmd를 누른 채 왼쪽 대괄호 [ 를 눌러 뒤로 보내보세요!"},{"role":"student","en":"Wow, that's so easy! Now it looks natural!","ko":"와, 정말 쉽네요! 이제 자연스러워 보여요!"}]},"patterns":[{"tag":"","title":"Clipping Mask / Place Inside","koTitle":"클리핑 마스크 / 레이어 넣기","examples":[["Cut the stripe pattern, paste it above the T-shirt, and drag the layer to place it inside.","줄무늬 패턴을 잘라내서 티셔츠 레이어 위에 붙여넣은 뒤, 드래그해서 안으로 넣어보세요."]],"quizKo":"이 곡선을 잘라내고, 케이크 위에 붙여넣은 뒤 드래그해서 안으로 넣어보세요.","answer":"Cut this curve, paste it above the cake, and drag the layer to place it inside."},{"tag":"","title":"Stretching Handles with Node Tool","koTitle":"노드 핸들로 곡선 조절하기","examples":[["Click this node and stretch the handles outward a little to make a chubby face.","이 노드를 클릭하고 핸들을 바깥쪽으로 조금 늘려서 통통한 얼굴을 만들어 보세요."],["Click the top node and drag the handles to make the curve smoother.","위쪽 노드를 클릭하고 핸들을 드래그해서 곡선을 더 부드럽게 만들어 보세요."]],"quizKo":"노드를 클릭하고 핸들을 바깥쪽으로 늘려서 더 넓게 만들어 보세요.","answer":"Click the node and stretch the handles outward to make it wider."},{"tag":"","title":"Switching Between Move and Node Tools","koTitle":"이동 툴과 노드 툴 전환","examples":[["Press the letter V on your keyboard to go back to the Move tool.","키보드의 V를 눌러서 다시 이동 툴로 돌아가 보세요."]],"quizKo":"키보드의 A를 눌러서 노드 툴로 바꿔보세요.","answer":"Press the letter A on your keyboard to switch to the Node tool."},{"tag":"PRAISE","title":"Praising Creativity & Unique Styles","koTitle":"독창적인 상상력 칭찬하기","examples":[["I really love your unique idea of adding a hamburger and Coke for the bunny!","토끼에게 햄버거와 콜라를 들려준 독창적인 아이디어가 정말 좋네요!"],["I really love your creative idea of adding a bunny playing golf on the moon!","달에서 골프를 치는 토끼를 추가한 창의적인 아이디어가 정말 마음에 들어요!"]],"quizKo":"거리로 내려오는 헬리콥터를 추가한 창의적인 아이디어가 정말 좋습니다!","answer":"I really love your creative idea of adding a helicopter coming down onto the street."}]},"4":{"topic":"Cute Cat Character & Organic Vector Tools","terms":[["Transparency Tool (Y)","투명도 도구 (컬러 변화 없이 오브젝트에 투명도 그라데이션을 적용하여 부드러운 빛이나 그림자를 만드는 비파괴 도구)"],["Double Star Tool","더블 스타 툴 (안쪽/바깥쪽 노드 반경을 개별 조절할 수 있어 동물 캐릭터의 기본 몸통 형태를 잡기 유용한 도형 툴)"],["Convert to Smooth","곡선 노드 전환 (노드 툴 사용 중 뾰족한 앵커 포인트를 클릭 한 번으로 매끄러운 곡선 노드로 전환해 주는 기능)"],["Vector Blob Brush Tool","벡터 블롭 브러시 (드래그하는 대로 즉시 면 형태의 벡터 자국을 만들어 꼬리나 유기적인 형태를 그릴 때 유용한 도구)"]],"brainstormKo":"","s1":{"title":"“What is the most unique part of your cat?”","subtitle":"고양이 특징과 기분 상상하기","messages":[{"role":"teacher","en":"Look at your adorable cat! What is the most unique part of your cat?","ko":"귀여운 고양이를 보세요! 고양이의 가장 특별한 특징은 무엇인가요?"},{"role":"student","en":"My cat has <span class=\"slot\">[ 신체 특징/포인트 ]</span>","ko":"제 고양이는 [ 신체 특징/포인트 ]을/를 가지고 있어요!","group":"s1-hint"},{"role":"teacher","en":"Aww, that’s so cute! How is your cat feeling right now?","ko":"아, 정말 귀엽네요! 지금 고양이의 기분은 어떤가요?"},{"role":"student","en":"My cat is feeling <span class=\"slot\">[ 기분/상태 ]</span>!","ko":"제 고양이는 지금 [ 기분/상태 ]를 느끼고 있어요!"}],"hint":{"after":1,"group":"s1-hint","label":"고양이 특징 & 기분 단어 힌트","items":[["Big eyes","큰 눈"],["Relaxed","느긋한"],["Long whiskers","긴 수염"],["Surprised","놀란"],["A chubby body","통통한 몸"],["Satisfied","만족스러운"]]}},"s2":{"title":"Problem Solving","subtitle":"문제 해결","missionEn":"A student is struggling to close a shape because the pencil line won’t connect back to the start! Guide them calmly to turn on Auto-close and set it to 'Far' using the setting button.","missionKo":"연필 선 끝이 잘 닿지 않아 도형이 닫히지 않는 상황입니다. 설정에서 Auto-close를 켜고 'Far'로 맞추도록 차분하게 안내해 보세요.","messages":[{"role":"teacher","en":"Oh, look! The line isn't closing completely. Let's fix it in the settings!","ko":"어, 보세요! 선이 완전히 닫히지 않았네요. 설정에서 고쳐봐요!"},{"role":"student","en":"How can I close it?","ko":"어떻게 닫아야 하나요?"},{"role":"teacher","en":"Click the gear icon at the top, turn on Auto-close, and set it to 'Far'!","ko":"상단의 기어 아이콘을 누르고 Auto-close를 켠 뒤 'Far'로 설정해 보세요!"},{"role":"student","en":"Wow, now the shape closes so easily! Thank you!","ko":"와, 이제 도형이 정말 쉽게 닫히네요! 감사해요!"}]},"patterns":[{"tag":"","title":"Transparency Tool","koTitle":"투명도 그라데이션 적용하기","examples":[["Press the letter Y on your keyboard and drag from bottom to top to make it transparent.","키보드의 Y를 누르고 아래에서 위로 드래그해서 투명하게 만들어 보세요."],["Press the letter Y on your keyboard and drag from left to right to create a soft light effect.","키보드의 Y를 누르고 왼쪽에서 오른쪽으로 드래그해서 은은한 빛 효과를 만들어 보세요."]],"quizKo":"키보드의 Y를 누르고 위에서 아래로 드래그해서 부드러운 빛 효과를 만들어 보세요.","answer":"Press the letter Y on your keyboard and drag from top to bottom to create a soft light effect."},{"tag":"","title":"Converting Nodes to Smooth Curves","koTitle":"노드를 부드러운 곡선으로 전환하기","examples":[["Select the nodes with the Node tool and click the Convert to Smooth button to make the ears rounded.","노드 툴로 노드들을 선택하고 Convert to Smooth 버튼을 눌러 동글동글한 귀를 만들어 보세요."],["Select all the nodes and click the Convert to Smooth button to make the rock shape natural.","모든 노드를 선택하고 Convert to Smooth 버튼을 눌러 바위 모양을 자연스럽게 만들어 보세요."]],"quizKo":"노드 툴로 노드를 선택하고 Convert to Smooth 버튼을 눌러서 더 부드럽게 만들어 보세요.","answer":"Select the node with the Node tool and click the Convert to Smooth button to make it smoother."},{"tag":"","title":"Applying Path Brushes to Strokes","koTitle":"선에 브러시 적용하기","examples":[["Select the shape, choose the Dense Charcoal brush from the Dry Media category, and adjust the stroke width.","도형을 선택하고 Dry Media 카테고리에서 Dense Charcoal 브러시를 골라 스트로크 두께를 조절해 보세요."],["Select the whiskers, choose the Light Charcoal brush, and change the stroke color to black.","수염을 선택하고 Light Charcoal 브러시를 선택한 뒤 스트로크 색상을 검은색으로 바꿔 보세요."]],"quizKo":"도형을 선택하고 Dry Media 카테고리에서 파스텔 브러시를 선택한 뒤 두께를 조절해 보세요.","answer":"Select the shape, choose the Pastel brush from the Dry Media category, and adjust the stroke width."},{"tag":"PRAISE","title":"Praising Mood, Situation & Expressive Details","koTitle":"상황 표현 및 스타일 칭찬하기","examples":[["Great job expressing the relaxed mood of the cat lying on the floor!","바닥에 누워있는 고양이의 느긋한 분위기를 멋지게 잘 표현하셨네요!"],["I like how you expressed the surprised situation with that unique shadow!","독특한 그림자로 놀란 상황을 표현해낸 방식이 참 좋네요!"]],"quizKo":"빛 반사 효과로 바닷속 장면을 표현해낸 방식이 참 좋습니다!","answer":"I like how you expressed the underwater scene with light reflections!"}]},"5":{"topic":"Design a Cozy Room & Workspace Management","terms":[["Outer Shadow Effect (FX)","아우터 섀도 효과 (오브젝트 하단에 은은한 그림자 효과를 주어 입체감을 살리고, 바닥에 자연스럽게 떠 있거나 놓여 있는 듯한 '깊이감(Depth)'을 만드는 효과)"],["Studio Panel Preset","패널 프리셋 (패널 조작 중 레이어 패널이나 컬러 패널이 사라졌을 때, [Window] - [Panels] 메뉴를 통해 작업 공간을 초기화(Reset)하거나 나만의 패널 배치를 저장해두고 불러오는 공간 관리 기능)"]],"brainstormKo":"","s1":{"title":"Adding Props & Details","subtitle":"소품과 세부 요소로 분위기 연출하기","messages":[{"role":"teacher","en":"Look at your relaxing character! What props do you want to add to make it cozier?","ko":"편안해 보이는 캐릭터를 보세요! 더 아늑하게 만들기 위해 어떤 소품을 추가하고 싶나요?"},{"role":"student","en":"I want to add <span class=\"slot\">[ 소품 이름 ]</span> for my character!","ko":"제 캐릭터를 위해 [ 소품 이름 ]을/를 추가하고 싶어요!","group":"s1-hint"},{"role":"teacher","en":"That’s a brilliant idea! Where are you going to put it, and what is your character doing?","ko":"멋진 아이디어네요! 어디에 두고, 캐릭터는 무엇을 하고 있나요?"},{"role":"student","en":"I'll put it <span class=\"slot\">[ 위치 ]</span>, and my character is <span class=\"slot\">[ -ing 행동 ]</span>!","ko":"[ 위치 ]에 두고, 제 캐릭터는 [ -ing 행동 ]을/를 하고 있을 거예요!"}],"hint":{"after":1,"group":"s1-hint","label":"소품 & 위치/행동 단어 힌트","items":[["A side table","협탁"],["next to the bed","침대 옆에"],["drinking hot chocolate","핫초코 마시기"],["A remote control","리모컨"],["on the sofa","소파 위에"],["watching Netflix","넷플릭스 보기"],["A floor lamp","장스탠드 조명"],["in the corner","구석에"],["enjoying organic chips","유기농 칩 먹기"]]}},"s2":{"title":"Problem Solving","subtitle":"패널이 사라졌거나 작업 공간이 어지러울 때","missionEn":"A student accidentally closed their Layers panel while drawing and got panicked! Guide them calmly to reset the panel workspace.","missionKo":"학생이 그림을 그리다가 실수로 레이어 패널을 닫고 당황한 상황입니다. 차분하게 패널 작업 공간을 초기화하도록 안내해 보세요.","messages":[{"role":"teacher","en":"Oh, where did your Layers panel go? Don't worry! Let's bring it back together.","ko":"어, 레이어 패널이 어디로 갔을까요? 걱정하지 마세요! 같이 다시 불러와 봐요."},{"role":"student","en":"I accidentally closed it! How can I see my layers again?","ko":"실수로 닫아버렸어요! 어떻게 해야 레이어 패널을 다시 볼 수 있나요?"},{"role":"teacher","en":"Click Window at the top, go to Panels, and click Reset! It resets all the panels right away.","ko":"상단의 Window를 누르고 Panels로 가서 Reset을 눌러보세요! 모든 패널이 바로 초기화돼요."},{"role":"student","en":"Wow, my Layers panel is back! Thank you, Teacher!","ko":"와, 레이어 패널이 다시 돌아왔어요! 감사해요, 선생님!"}]},"patterns":[{"tag":"GUIDE","title":"Subtract Tool","koTitle":"도형 잘라내어 새 모양 만들기","examples":[["Overlap the two shapes, select them together, and click the Subtract button to make a donut shape.","두 도형을 겹쳐놓고 함께 선택한 뒤, Subtract 버튼을 눌러 도넛 모양을 만들어 보세요."],["Select the two shapes together and click the Subtract button to delete the unnecessary part.","두 도형을 함께 선택하고 Subtract 버튼을 눌러 불필요한 부분을 잘라내 보세요."]],"quizKo":"두 도형을 겹쳐놓고 함께 선택한 뒤, Subtract 버튼을 눌러 열쇠구멍 모양을 만들어 보세요.","answer":"Overlap the two shapes, select them together, and click the Subtract button to make a keyhole shape."},{"tag":"GUIDE","title":"Compound Shapes","koTitle":"비파괴 합성으로 수정 가능한 도형 만들기","examples":[["Hold the Alt key and click the Add button so you can edit each shape later.","Alt 키를 누른 채 Add 버튼을 눌러 나중에도 각 도형을 수정할 수 있게 합쳐 보세요."],["Hold the Alt key and click the Add button to make a compound shape for the logo.","Alt 키를 누른 채 Add 버튼을 눌러 로고를 위한 Compound 도형을 만들어 보세요."]],"quizKo":"Alt 키를 누른 채 Add 버튼을 눌러 이 도형들을 합쳐 보세요.","answer":"Hold the Alt key and click the Add button to combine these shapes."},{"tag":"GUIDE","title":"Saving Panel Layout Presets","koTitle":"패널 배치 나만의 프리셋으로 저장하기","examples":[["Go to Panels, click Add Preset, and type ‘reset’ to save your current layout.","Panels로 가서 Add Preset을 누르고 ‘reset’을 입력해 현재 배치를 저장해 보세요."],["Go to Panels and click Add Preset so you can go back to this setup anytime.","Panels로 가서 Add Preset을 눌러 언제든 이 설정으로 돌아올 수 있게 저장해 보세요."]],"quizKo":"Panels로 가서 Add Preset을 누르고 이름을 입력해 배치를 저장해 보세요.","answer":"Go to Panels, click Add Preset, and type your name to save your layout."},{"tag":"PRAISE","title":"Complimenting Atmosphere & Creative Details","koTitle":"분위기 연출 및 세부 요소 칭찬하기","examples":[["It’s so impressive how you used the Netflix and YouTube buttons to capture the cozy weekend vibe!","넷플릭스와 유튜브 버튼을 활용해서 아늑한 주말 분위기를 멋지게 살려낸 점이 정말 인상적이에요!"],["It’s so impressive how you used small props to capture the relaxing atmosphere of your character!","작은 소품들을 활용해서 캐릭터의 느긋하고 편안한 분위기를 멋지게 살려낸 점이 정말 인상적이에요!"]],"quizKo":"여러 가지 버튼을 활용해서 실제 리모컨 느낌을 멋지게 살려낸 점이 정말 인상적이에요!","answer":"It’s so impressive how you used various buttons to capture the real remote control vibe!"}]},"6":{"topic":"Design a Space Scene & Technical Troubleshooting","terms":[["Vector Crop Tool","비파괴 자르기 도구 (이미지를 자르는 일반 Crop Tool과 달리, 도형이나 레이어의 특정 영역만 비파괴 방식으로 가려서 원하는 부분만 남기는 모듈형 자르기 도구. 맨 위 원의 아래쪽을 잘라내어 고리가 행성을 입체적으로 감싸는 듯한 효과를 연출할 때 사용)"],["Break Curve (Node Disconnect)","노드 분리 기능 (노드 툴 사용 중 선택한 앵커 포인트를 분리하여 닫힌 패스를 열린 선으로 끊어내거나, 필요 없는 선 부분만 선택해 삭제할 수 있게 해주는 기능. 캐릭터 패스를 정리하거나 불필요한 선을 잘라낼 때 사용)"]],"brainstormKo":"","s1":{"title":"Character's Feelings & Story","subtitle":"캐릭터의 기분과 사연 이야기하기","messages":[{"role":"teacher","en":"Look at your character on the planet! How do you think your character is feeling?","ko":"행성 위에 있는 캐릭터를 보세요! 캐릭터가 어떤 기분을 느끼고 있는 것 같나요?"},{"role":"student","en":"My character is feeling <span class=\"slot\">[ 기분 ]</span> because <span class=\"slot\">[ 사연 ]</span>!","ko":"제 캐릭터는 [ 사연 ]해서 [ 기분 ]을 느끼고 있어요!","group":"s1-hint"},{"role":"teacher","en":"Oh really? What is it doing right now?","ko":"아 정말요? 지금 거기서 무엇을 하고 있나요?"},{"role":"student","en":"It is <span class=\"slot\">[ 행동 ]</span>!","ko":"지금 [ 행동 ]을/를 하고 있어요!"}],"hint":{"after":1,"group":"s1-hint","label":"캐릭터 기분 & 사연 단어 힌트","items":[["upset","속상한"],["he failed an exam","시험을 망쳐서"],["crying in the corner","구석에서 울고 있는"],["worried","걱정하는"],["he flew off the screen","화면 밖으로 튕겨 나가서"],["trying to come back","다시 돌아오려고 애쓰는"],["excited","신이 난"],["she was the first to land on the moon","달에 1등으로 착륙해서"],["planting a flag","깃발을 꽂고 있는"]]}},"s2":{"title":"Problem Solving","subtitle":"아트보드를 놓쳐 화면이 확대되었을 때","missionEn":"A student can't find their artboard after zooming in too much! Guide them to reset the artboard view.","missionKo":"학생이 너무 확대해서 아트보드를 놓친 상황입니다. 아트보드 화면을 다시 맞추도록 안내해 보세요.","messages":[{"role":"teacher","en":"Oh, did your artboard disappear? Don’t worry! Let’s fit it back to the screen.","ko":"어라, 아트보드가 사라졌나요? 걱정하지 마세요! 다시 화면 크기에 맞게 맞춰 봐요."},{"role":"student","en":"I zoomed in too much! How can I see my whole space scene again?","ko":"너무 확대했어요! 전체 우주 풍경을 다시 어떻게 보나요?"},{"role":"teacher","en":"Press Control and zero together on your keyboard! That will fit the whole artboard to your screen.","ko":"키보드에서 Control과 0을 함께 눌러보세요! 아트보드가 화면 크기에 딱 맞춰 돌아올 거예요."},{"role":"student","en":"Aha! I can see my whole space scene again. Thank you, Teacher!","ko":"아하! 이제 전체 우주 풍경이 다시 보여요. 감사해요, 선생님!"}]},"patterns":[{"tag":"GUIDE","title":"Making Ring Planets with Vector Crop","koTitle":"Vector Crop으로 고리 행성 만들기","examples":[["Draw a circle, add a ring, and put another circle on top.","원을 그리고, 고리를 얹은 뒤, 그 위에 또 다른 원을 올려보세요."],["Crop the bottom of the top circle to show the ring.","맨 위 원의 아래를 잘라서 고리가 보이게 해보세요."]]},{"tag":"GUIDE","title":"Adding Texture using Place Inside","koTitle":"Place Inside로 행성에 텍스처 넣기","examples":[["Draw some crater patterns, group them together, and drag the group inside the moon layer.","크레이터 패턴을 그리고 그룹으로 묶은 다음, 그 그룹을 달 레이어 안으로 드래그해 넣어보세요."],["If you drag your stripe patterns inside the circle layer, they will clip perfectly to the planet shape.","줄무늬 패턴을 원 레이어 안으로 드래그하면 행성 모양에 맞춰 깔끔하게 잘려 들어갑니다."]],"quizKo":"텍스처 레이어를 원 레이어 안으로 드래그해서 넣어보세요.","answer":"Drag the texture layer inside the circle layer."},{"tag":"SHORTCUT","title":"Grouping & Ungrouping","koTitle":"그룹 지정 및 해제 단축키","examples":[["Select all the glowing stars and press Control + G so you can move them all at once.","빛나는 별들을 모두 선택하고 Control + G를 누르면 한 번에 같이 움직일 수 있어요."],["If you want to change the color of just one character, press Control + Shift + G to ungroup the characters first.","캐릭터 하나만 색상을 바꾸고 싶다면, 먼저 Control + Shift + G를 눌러 캐릭터들의 그룹을 해제해 주세요."]],"quizKo":"Control + Shift + G를 눌러 그룹을 해제해 보세요.","answer":"Press Control + Shift + G to ungroup them."},{"tag":"SHARING STORY","title":"Inviting Students to Share Their Work","koTitle":"작품 스토리 발표 및 공유 유도하기","examples":[["Before we wrap up, can you show us your artwork and tell us what's happening in your space scene?","수업을 마치기 전에, 여러분의 작품을 보여주며 우주 장면에서 무슨 일이 벌어지고 있는지 이야기해 줄 수 있나요?"]],"quizKo":"오늘 수업을 마무리하기 전에, 여러분이 만든 작품에 대해 이야기해 줄 수 있나요?","answer":"Before we wrap up today's class, can you show us your artwork and tell us about it?"}]}};
 
 let activeLesson = null;
 let currentPart = 0;
@@ -638,6 +594,10 @@ let partProgress = [];
 let revealMap = [];
 let part3Sections = [];
 let pendingSectionScroll = null;
+
+function escAttr(value='') {
+  return String(value).replace(/&/g,'&amp;').replace(/"/g,'&quot;');
+}
 
 function renderHome() {
   activeLesson = null;
@@ -650,68 +610,192 @@ function renderHome() {
       <section class="lesson-grid" aria-label="Diploma lesson list">
         ${Array.from({length:12}, (_,i) => {
           const n = i + 1;
-          const active = n === 1;
+          const lesson = LESSONS[n];
+          const active = Boolean(lesson);
           return `
-            <button class="lesson-card ${active ? 'active' : 'disabled'}" ${active ? 'data-lesson="1"' : 'disabled'}>
+            <button class="lesson-card ${active ? 'active' : 'disabled'}" ${active ? `data-lesson="${n}"` : 'disabled'}>
               <strong>DIPLOMA ${String(n).padStart(2,'0')}</strong>
-              <span class="meta">${active ? 'Design a 3D Room & Handle Audio Problems' : ' '}</span>
+              <span class="meta">${active ? lesson.topic : ' '}</span>
               <span class="arrow-dot">${active ? '→' : '·'}</span>
             </button>`;
         }).join('')}
       </section>
     </main>`;
-  const first = app.querySelector('[data-lesson="1"]');
-  if (first) first.addEventListener('click', renderLesson);
+
+  app.querySelectorAll('[data-lesson]').forEach(btn => {
+    btn.addEventListener('click', () => renderLesson(Number(btn.dataset.lesson)));
+  });
 }
 
 function langCard(en, ko, extra='') {
   return `<article class="language-card ${extra} reveal" data-reveal><p class="en">${en}</p><p class="ko">${ko}</p></article>`;
 }
 
-function bubble(role, en, ko, note='') {
+function bubble(m) {
+  const group = m.group ? ` data-step-group="${escAttr(m.group)}"` : '';
   return `
-    <div class="chat-row ${role} reveal" data-reveal>
+    <div class="chat-row ${m.role} reveal" data-reveal${group}>
       <article class="bubble">
-        <div class="speaker">${role === 'teacher' ? 'Teacher' : 'Student'}</div>
-        ${note ? `<div class="action-note">${note}</div>` : ''}
-        <div class="en">${en}</div>
-        <div class="ko">${ko}</div>
+        <div class="speaker">${m.role === 'teacher' ? 'Teacher' : 'Student'}</div>
+        ${m.note ? `<div class="action-note">${m.note}</div>` : ''}
+        <div class="en">${m.en}</div>
+        <div class="ko">${m.ko}</div>
       </article>
     </div>`;
 }
 
-function renderPattern(p) {
+function hintBox(hint) {
+  const group = hint.group ? ` data-step-group="${escAttr(hint.group)}"` : '';
   return `
-    <section class="pattern-section" id="pattern-${p.no}">
-      <h3 class="pattern-subtitle reveal" data-reveal><span class="tag">${p.no} · ${p.tag}</span>${p.title}<br><span style="font-size:14px;color:#ffffff;font-weight:400;">${p.koTitle}</span></h3>
-      <div class="content-stack">
-        <article class="language-card reveal" data-reveal>
-          <span class="example-label">Example 1</span>
-          <p class="en">${p.examples[0][0]}</p>
-          <p class="ko">${p.examples[0][1]}</p>
-        </article>
-        <article class="language-card reveal" data-reveal>
-          <span class="example-label">Example 2</span>
-          <p class="en">${p.examples[1][0]}</p>
-          <p class="ko">${p.examples[1][1]}</p>
-        </article>
-        <article class="quiz-card reveal" data-reveal role="button" tabindex="0" aria-label="Mini quiz answer reveal">
-          <span class="quiz-label">Mini Quiz</span>
-          <div class="masked-answer">
-            ${p.answerParts.map(part => part.key
-              ? `<span class="answer-keyword">${part.text}</span>`
-              : `<span class="mask">${part.text}</span>`).join(' ')}
-          </div>
-          <p class="ko" style="margin-top:10px;">${p.quizKo}</p>
-        </article>
+    <aside class="hint-box reveal" data-reveal${group}>
+      <strong>💡 Word Hint Box · ${hint.label}</strong>
+      <div class="hint-list">
+        ${hint.items.map(([en,ko]) => `<span class="hint-chip">${en}<span>${ko}</span></span>`).join('')}
       </div>
+    </aside>`;
+}
+
+function renderMessagesWithHint(situation) {
+  return situation.messages.map((m, index) => {
+    const extra = situation.hint && situation.hint.after === index ? hintBox(situation.hint) : '';
+    return bubble(m) + extra;
+  }).join('');
+}
+
+const QUIZ_VISIBLE_TERMS = {
+  '2-2': ['separate'],
+  '3-1': ['stretch', 'outward'],
+  '4-1': ['Convert to Smooth'],
+  '4-2': ['Dry Media'],
+  '4-3': ['underwater', 'light reflections'],
+  '5-0': ['keyhole shape'],
+  '5-3': ['remote control']
+};
+
+function escapeHtml(text) {
+  return String(text)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+function escapeRegExp(text) {
+  return String(text).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function renderMaskSegment(text, isLeading = false) {
+  if (!text) return '';
+  const match = String(text).match(/^(\s*)([\s\S]*?)(\s*)$/);
+  const leadingSpace = match ? match[1] : '';
+  const core = match ? match[2] : String(text);
+  const trailingSpace = match ? match[3] : '';
+
+  if (!core) return escapeHtml(text);
+
+  return `${escapeHtml(leadingSpace)}<span class="mask${isLeading ? ' leading' : ''}">${escapeHtml(core)}</span>${escapeHtml(trailingSpace)}`;
+}
+
+function renderMaskedAnswer(answer, lessonNumber, patternIndex) {
+  const source = String(answer);
+  const terms = QUIZ_VISIBLE_TERMS[`${lessonNumber}-${patternIndex}`] || [];
+  let html = '<span class="quiz-question" aria-hidden="true">?</span>';
+
+  if (!terms.length) {
+    return html + renderMaskSegment(source, true);
+  }
+
+  const sorted = [...terms].sort((a, b) => b.length - a.length);
+  const regex = new RegExp(sorted.map(escapeRegExp).join('|'), 'gi');
+  const matches = [...source.matchAll(regex)];
+
+  if (!matches.length) {
+    return html + renderMaskSegment(source, true);
+  }
+
+  let cursor = 0;
+  let usedLeadingMask = false;
+
+  matches.forEach(match => {
+    const index = match.index ?? 0;
+    const hiddenBefore = source.slice(cursor, index);
+    if (hiddenBefore) {
+      html += renderMaskSegment(hiddenBefore, !usedLeadingMask);
+      if (hiddenBefore.trim()) usedLeadingMask = true;
+    }
+
+    let visible = match[0];
+    cursor = index + match[0].length;
+
+    // If punctuation is attached directly to a revealed keyword/phrase,
+    // reveal that punctuation with the keyword as one unit.
+    const punctuation = source.slice(cursor).match(/^[.,!?;:…]+/);
+    if (punctuation) {
+      visible += punctuation[0];
+      cursor += punctuation[0].length;
+    }
+
+    html += `<span class="answer-keyword">${escapeHtml(visible)}</span>`;
+  });
+
+  const hiddenAfter = source.slice(cursor);
+  if (hiddenAfter) {
+    html += renderMaskSegment(hiddenAfter, !usedLeadingMask);
+  }
+
+  return html;
+}
+
+function positionQuizQuestionMarks(root = document) {
+  root.querySelectorAll('.masked-answer').forEach(answerEl => {
+    const question = answerEl.querySelector('.quiz-question');
+    const leadingMask = answerEl.querySelector('.mask.leading') || answerEl.querySelector('.mask');
+    if (!question || !leadingMask) return;
+
+    const rects = leadingMask.getClientRects();
+    if (!rects.length) return;
+
+    const firstRect = rects[0];
+    const answerRect = answerEl.getBoundingClientRect();
+    question.style.left = `${firstRect.left - answerRect.left + (firstRect.width / 2)}px`;
+    question.style.top = `${firstRect.top - answerRect.top + (firstRect.height / 2)}px`;
+  });
+}
+
+function refreshQuizQuestionMarks() {
+  requestAnimationFrame(() => positionQuizQuestionMarks());
+}
+
+function renderPattern(p, index, lessonNumber) {
+  const no = String(index + 1).padStart(2,'0');
+  const exampleCards = (p.examples || []).map((ex, i) => `
+    <article class="language-card reveal" data-reveal>
+      <span class="example-label">Example ${i + 1}</span>
+      <p class="en">${ex[0]}</p>
+      <p class="ko">${ex[1]}</p>
+    </article>`).join('');
+
+  const quiz = p.quizKo && p.answer ? `
+    <article class="quiz-card reveal" data-reveal role="button" tabindex="0" aria-label="Mini quiz answer reveal">
+      <span class="quiz-label">Mini Quiz</span>
+      <div class="masked-answer">${renderMaskedAnswer(p.answer, lessonNumber, index)}</div>
+      <p class="ko" style="margin-top:10px;">${p.quizKo}</p>
+    </article>` : '';
+
+  return `
+    <section class="pattern-section" id="pattern-${no}">
+      <h3 class="pattern-subtitle reveal" data-reveal><span class="tag">${no}${p.tag ? ` · ${p.tag}` : ''}</span>${p.title}<br><span style="font-size:14px;color:#ffffff;font-weight:400;">${p.koTitle}</span></h3>
+      <div class="content-stack">${exampleCards}${quiz}</div>
     </section>`;
 }
 
-function renderLesson() {
-  activeLesson = 1;
+function renderLesson(lessonNumber) {
+  const lesson = LESSONS[lessonNumber];
+  if (!lesson) return;
+  activeLesson = lessonNumber;
   currentPart = 0;
-  document.title = 'DIPLOMA 01 · Design a 3D Room & Handle Audio Problems';
+  document.title = `DIPLOMA ${String(lessonNumber).padStart(2,'0')} · ${lesson.topic}`;
 
   app.innerHTML = `
     <main class="lesson-view">
@@ -720,7 +804,7 @@ function renderLesson() {
           <button class="toolbtn" id="homeBtn" title="목차로"><span>←</span><span class="label">목차</span></button>
         </div>
         <div class="title-wrap">
-          <div class="viewer-title">DIPLOMA 01</div>
+          <div class="viewer-title">DIPLOMA ${String(lessonNumber).padStart(2,'0')}</div>
           <div class="page-count" id="partCount">PART 1 / 3</div>
         </div>
         <div class="toolbar-right">
@@ -741,7 +825,7 @@ function renderLesson() {
               <p class="part-description">영문 용어와 국문 설명을 한 세트씩 확인합니다.</p>
             </div>
             <div class="content-stack">
-              ${TERMS.map(t => langCard(t.en, t.ko, 'term-card')).join('')}
+              ${lesson.terms.map(t => langCard(t[0], t[1], 'term-card')).join('')}
             </div>
           </div>
         </section>
@@ -757,38 +841,19 @@ function renderLesson() {
               <aside class="notice-card reveal" data-reveal>
                 <span class="notice-label">Brainstorming</span>
                 <div class="en">Let's warm up our brains and speak in English before we start drawing!</div>
-                <div class="ko">본격적으로 그리기 전에 내 방을 상상하며 입을 열어봅시다!</div>
+                ${lesson.brainstormKo ? `<div class="ko">${lesson.brainstormKo}</div>` : ''}
               </aside>
 
-              <div class="situation-title reveal" data-reveal>Situation 1: “What's in your room?”<small>내 방 가구 소개하기</small></div>
-              ${bubble('teacher', 'Imagine your own room. What do you have in your room?', '여러분의 방을 상상해 보세요. 방 안에 무엇이 있나요?')}
-              <div class="chat-row student reveal" data-reveal data-step-group="room-first-answer">
-                <article class="bubble">
-                  <div class="speaker">Student</div>
-                  <div class="en">In my room, I have a <span class="slot">[ Furniture 1 ]</span> and a <span class="slot">[ Furniture 2 ]</span>.</div>
-                  <div class="ko">제 방에는 [ 가구 1 ]과 [ 가구 2 ]가 있어요!</div>
-                </article>
-              </div>
-              <aside class="hint-box reveal" data-reveal data-step-group="room-first-answer">
-                <strong>💡 Word Hint Box · 가구/소품 단어 힌트</strong>
-                <div class="hint-list">
-                  ${[['Desk','책상'],['Bed','침대'],['Chair','의자'],['Closet','옷장'],['Bookshelf','책장'],['Side table','협탁'],['Lamp','조명'],['Cushion','쿠션']].map(([en,ko]) => `<span class="hint-chip">${en}<span>${ko}</span></span>`).join('')}
-                </div>
-              </aside>
-              ${bubble('teacher', 'That sounds nice! Do you have a pillow on your bed?', '좋네요! 침대 위에 베개가 있나요?')}
-              ${bubble('student', 'Yes! I have a <span class="slot">[ Shape / Color ]</span> pillow on my bed.', '네! 침대 위에 [ 모양/색상 ] 베개가 있어요.')}
+              <div class="situation-title reveal" data-reveal>Situation 1: ${lesson.s1.title}<small>${lesson.s1.subtitle}</small></div>
+              ${renderMessagesWithHint(lesson.s1)}
 
-              <div class="situation-title reveal" data-reveal>Situation 2: Problem Solving<small>돌발 상황 해결</small></div>
+              <div class="situation-title reveal" data-reveal>Situation 2: ${lesson.s2.title}<small>${lesson.s2.subtitle}</small></div>
               <aside class="notice-card reveal" data-reveal>
                 <span class="notice-label">Mission</span>
-                <div class="en">Your student's microphone suddenly stops working during class! Handle the situation calmly as a teacher using the script below.</div>
-                <div class="ko">수업 도중 갑자기 학생의 마이크 소리가 들리지 않는 상황입니다. 아래 스크립트로 문제를 해결해 보세요.</div>
+                <div class="en">${lesson.s2.missionEn}</div>
+                <div class="ko">${lesson.s2.missionKo}</div>
               </aside>
-              ${bubble('teacher', "Zack, I can't hear you! Do you have a headset? If you do, can you click an emoji?", '잭, 목소리가 안 들려요! 혹시 헤드셋 가지고 있나요? 있다면 이모지를 눌러줄 수 있나요?')}
-              ${bubble('student', '💬 “My microphone is not working, and I don’t have a headset.”', '제 마이크가 작동하지 않고, 헤드셋도 없어요.', 'Types in chat')}
-              ${bubble('teacher', 'No problem, we can use the chat today! Can you click an emoji if you can hear me?', '괜찮아요, 오늘은 채팅창을 쓰면 됩니다! 선생님 말이 잘 들린다면 이모지를 눌러줄 수 있나요?')}
-              ${bubble('student', '👍', '이모지를 클릭합니다.', 'Click emoji')}
-              ${bubble('teacher', "Perfect! Let's check your mic setup after class. For now, let’s keep drawing!", '좋아요! 수업 끝나고 마이크 설정을 같이 체크해 봐요. 지금은 계속 그려봅시다!')}
+              ${lesson.s2.messages.map(bubble).join('')}
             </div>
           </div>
         </section>
@@ -798,11 +863,11 @@ function renderLesson() {
             <div class="part-intro reveal" data-reveal>
               <div class="part-kicker">PART 03</div>
               <h2>Classroom Master Patterns</h2>
-              <p class="part-description">각 패턴은 Example 1 → Example 2 → Mini Quiz 순서로 등장합니다.</p>
+              <p class="part-description">제공된 Example과 Mini Quiz를 순서대로 확인합니다.</p>
             </div>
-            ${PATTERNS.map(renderPattern).join('')}
+            ${lesson.patterns.map((p, i) => renderPattern(p, i, lessonNumber)).join('')}
             <div class="complete-card reveal" data-reveal>
-              <strong>DIPLOMA 01 Complete</strong>
+              <strong>DIPLOMA ${String(lessonNumber).padStart(2,'0')} Complete</strong>
               <span>모든 패턴을 확인했습니다.</span>
             </div>
           </div>
@@ -813,6 +878,7 @@ function renderLesson() {
   bindLessonEvents();
   buildRevealMap();
   updateState();
+  refreshQuizQuestionMarks();
 }
 
 function buildRevealMap() {
@@ -820,7 +886,6 @@ function buildRevealMap() {
     const elements = [...part.querySelectorAll('[data-reveal]')];
     const steps = [];
     const grouped = new Map();
-
     elements.forEach(el => {
       const groupName = el.dataset.stepGroup;
       if (groupName) {
@@ -840,22 +905,14 @@ function buildRevealMap() {
   const part3Steps = revealMap[2] || [];
   part3Sections = [...document.querySelectorAll('#part-3 .pattern-section')].map(section => {
     const sectionReveals = [...section.querySelectorAll('[data-reveal]')];
-    const indexes = sectionReveals
-      .map(el => part3Steps.findIndex(step => step.includes(el)))
-      .filter(index => index >= 0);
-    return {
-      id: section.id,
-      start: Math.min(...indexes),
-      end: Math.max(...indexes) + 1
-    };
+    const indexes = sectionReveals.map(el => part3Steps.findIndex(step => step.includes(el))).filter(index => index >= 0);
+    return { id: section.id, start: Math.min(...indexes), end: Math.max(...indexes) + 1 };
   });
 
   const completeCard = document.querySelector('#part-3 .complete-card');
   if (completeCard) {
     const completeIndex = part3Steps.findIndex(step => step.includes(completeCard));
-    if (completeIndex >= 0) {
-      part3Sections.push({id: 'part-3-complete', start: completeIndex, end: completeIndex + 1, element: completeCard});
-    }
+    if (completeIndex >= 0) part3Sections.push({id:'part-3-complete', start:completeIndex, end:completeIndex + 1, element:completeCard});
   }
 
   partProgress = revealMap.map(() => 0);
@@ -868,15 +925,11 @@ function bindLessonEvents() {
   document.getElementById('restartBtn').addEventListener('click', restartLesson);
   document.getElementById('nextBtn').addEventListener('click', nextStep);
   document.getElementById('prevBtn').addEventListener('click', prevStep);
-
   document.querySelectorAll('.quiz-card').forEach(card => {
     const toggle = () => card.classList.toggle('revealed');
     card.addEventListener('click', toggle);
     card.addEventListener('keydown', e => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        toggle();
-      }
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); }
     });
   });
 }
@@ -888,37 +941,21 @@ function applyRevealState(partIndex) {
     const visible = stepIndex < progress;
     step.forEach(el => {
       el.classList.toggle('is-visible', visible);
-      if (!visible && el.classList.contains('quiz-card')) {
-        el.classList.remove('revealed');
-      }
+      if (!visible && el.classList.contains('quiz-card')) el.classList.remove('revealed');
     });
   });
+  refreshQuizQuestionMarks();
 }
 
-function applyAllRevealStates() {
-  revealMap.forEach((_, i) => applyRevealState(i));
-}
-
-function getPart3SectionAtStart(progress) {
-  return part3Sections.find(section => section.start === progress) || null;
-}
-
-function getPart3SectionElement(section) {
-  if (!section) return null;
-  return section.element || document.getElementById(section.id);
-}
-
-function scrollToPart3Section(section) {
-  const target = getPart3SectionElement(section);
-  if (!target) return;
-  target.scrollIntoView({behavior:'smooth', block:'start'});
-}
+function applyAllRevealStates() { revealMap.forEach((_, i) => applyRevealState(i)); }
+function getPart3SectionAtStart(progress) { return part3Sections.find(section => section.start === progress) || null; }
+function getPart3SectionElement(section) { return section ? (section.element || document.getElementById(section.id)) : null; }
+function scrollToPart3Section(section) { const target = getPart3SectionElement(section); if (target) target.scrollIntoView({behavior:'smooth', block:'start'}); }
 
 function nextStep() {
   if (!activeLesson) return;
   const steps = revealMap[currentPart];
   const progress = partProgress[currentPart];
-
   if (currentPart === 2 && progress > 0) {
     const nextSection = getPart3SectionAtStart(progress);
     if (nextSection && pendingSectionScroll !== progress) {
@@ -928,20 +965,16 @@ function nextStep() {
       return;
     }
   }
-
   if (progress < steps.length) {
     pendingSectionScroll = null;
     partProgress[currentPart] += 1;
     applyRevealState(currentPart);
     const shownStep = steps[progress];
     const anchor = shownStep[shownStep.length - 1];
-    if (currentPart !== 2) {
-      requestAnimationFrame(() => keepVisible(anchor));
-    }
+    if (currentPart !== 2) requestAnimationFrame(() => keepVisible(anchor));
     updateState();
     return;
   }
-
   if (currentPart < revealMap.length - 1) {
     pendingSectionScroll = null;
     goToPart(currentPart + 1);
@@ -951,20 +984,15 @@ function nextStep() {
 function prevStep() {
   if (!activeLesson) return;
   const progress = partProgress[currentPart];
-
   if (currentPart === 2 && pendingSectionScroll !== null) {
     const currentBoundary = pendingSectionScroll;
     pendingSectionScroll = null;
     const previousSection = [...part3Sections].reverse().find(section => section.end <= currentBoundary);
-    if (previousSection) {
-      scrollToPart3Section(previousSection);
-    } else {
-      document.getElementById('part-3').scrollIntoView({behavior:'smooth', block:'start'});
-    }
+    if (previousSection) scrollToPart3Section(previousSection);
+    else document.getElementById('part-3').scrollIntoView({behavior:'smooth', block:'start'});
     updateState();
     return;
   }
-
   if (progress > 0) {
     pendingSectionScroll = null;
     partProgress[currentPart] -= 1;
@@ -972,21 +1000,18 @@ function prevStep() {
     const remaining = partProgress[currentPart];
     if (remaining > 0 && currentPart !== 2) {
       const anchorStep = revealMap[currentPart][remaining - 1];
-      const anchor = anchorStep[anchorStep.length - 1];
-      requestAnimationFrame(() => keepVisible(anchor));
+      requestAnimationFrame(() => keepVisible(anchorStep[anchorStep.length - 1]));
     }
     updateState();
     return;
   }
-
   if (currentPart > 0) {
     pendingSectionScroll = null;
     const previousPart = currentPart - 1;
     currentPart = previousPart;
     partProgress[previousPart] = revealMap[previousPart].length;
     applyRevealState(previousPart);
-    const target = document.querySelector(`[data-part="${previousPart}"]`);
-    target.scrollIntoView({behavior:'smooth', block:'start'});
+    document.querySelector(`[data-part="${previousPart}"]`).scrollIntoView({behavior:'smooth', block:'start'});
     updateState();
   }
 }
@@ -1007,9 +1032,7 @@ function keepVisible(el) {
   if (!el) return;
   const rect = el.getBoundingClientRect();
   const viewportBottom = window.innerHeight - 86;
-  if (rect.bottom > viewportBottom || rect.top < 84) {
-    el.scrollIntoView({behavior:'smooth', block:'center'});
-  }
+  if (rect.bottom > viewportBottom || rect.top < 84) el.scrollIntoView({behavior:'smooth', block:'center'});
 }
 
 function restartLesson() {
@@ -1030,11 +1053,8 @@ function updateState() {
   const next = document.getElementById('nextBtn');
   const visible = partProgress[currentPart] || 0;
   const total = revealMap[currentPart].length;
-
   partCount.textContent = `PART ${currentPart + 1} / ${revealMap.length}`;
-  progress.textContent = pendingSectionScroll !== null
-    ? '다음 섹션 준비 · 방향키 또는 화살표 버튼'
-    : `${visible} / ${total} · 방향키 또는 화살표 버튼`;
+  progress.textContent = pendingSectionScroll !== null ? '다음 섹션 준비 · 방향키 또는 화살표 버튼' : `${visible} / ${total} · 방향키 또는 화살표 버튼`;
   prev.disabled = currentPart === 0 && visible === 0;
   next.disabled = currentPart === revealMap.length - 1 && visible >= total;
 }
@@ -1043,19 +1063,13 @@ window.addEventListener('keydown', e => {
   if (!activeLesson) return;
   const tag = document.activeElement?.tagName;
   if (tag === 'INPUT' || tag === 'TEXTAREA') return;
-  if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
-    e.preventDefault();
-    nextStep();
-  }
-  if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
-    e.preventDefault();
-    prevStep();
-  }
-  if (e.key === 'Escape') {
-    e.preventDefault();
-    renderHome();
-  }
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown') { e.preventDefault(); nextStep(); }
+  if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { e.preventDefault(); prevStep(); }
+  if (e.key === 'Escape') { e.preventDefault(); renderHome(); }
 });
+
+window.addEventListener('resize', refreshQuizQuestionMarks);
+if (document.fonts?.ready) document.fonts.ready.then(refreshQuizQuestionMarks);
 
 renderHome();
 </script>
