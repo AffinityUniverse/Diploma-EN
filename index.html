@@ -434,18 +434,33 @@
   .mask {
     position: relative;
     display: inline;
-    border-radius: 4px;
     color: transparent;
     background: #111111;
+    border-radius: 5px;
     padding: 0 .10em;
-    box-decoration-break: clone;
     -webkit-box-decoration-break: clone;
-    transition: background .26s ease, color .26s ease;
+    box-decoration-break: clone;
+    transition: background .22s ease, color .22s ease;
+  }
+  .mask::after {
+    content: '?';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    color: #ffffff;
+    font-size: .72em;
+    line-height: 1;
+    font-weight: 700;
+    pointer-events: none;
   }
   .quiz-card.revealed .mask {
     color: #111111;
     background: transparent;
+    padding-left: 0;
+    padding-right: 0;
   }
+  .quiz-card.revealed .mask::after { content: none; }
 
   /* ---------- NAV ---------- */
   .navbtn {
