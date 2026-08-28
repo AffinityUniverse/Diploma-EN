@@ -38,19 +38,19 @@
 
   :root {
     color-scheme: dark;
-    --bg: #242544;
+    --bg: #0D1D32;
     --text: #ffffff;
     --muted: rgba(255,255,255,.58);
     --line: rgba(255,255,255,.16);
     --card: #ffffff;
     --card-text: #111111;
     --card-muted: #777777;
-    --yellow: #71AEFF;
-    --yellow-soft: #F3F8FF;
-    --navy-2: #2D315E;
-    --navy-3: #3A4175;
-    --navy-4: #5166A3;
-    --ice-blue: #71AEFF;
+    --yellow: #63B0FF;
+    --yellow-soft: #F2F8FF;
+    --navy-2: #153657;
+    --navy-3: #1D4A76;
+    --navy-4: #2E6FA8;
+    --ice-blue: #63B0FF;
     --radius: 22px;
     --shadow: 0 14px 40px rgba(0,0,0,.18);
     font-family: 'SpokaHanSansNeo', sans-serif;
@@ -74,8 +74,8 @@
   .app {
     min-height: 100vh;
     background:
-      radial-gradient(circle at 82% 12%, rgba(113,174,255,.28), transparent 28%),
-      linear-gradient(145deg, #242544 0%, #2A2E57 52%, #242544 100%);
+      radial-gradient(circle at 82% 12%, rgba(72,156,255,.36), transparent 30%),
+      linear-gradient(145deg, #0D1D32 0%, #173C63 52%, #0D1D32 100%);
   }
 
   /* ---------- COURSE LIST ---------- */
@@ -92,9 +92,9 @@
     min-height: 28px;
     padding: 0 11px;
     border-radius: 999px;
-    background: rgba(113,174,255,.10);
-    border: 1px solid rgba(113,174,255,.16);
-    color: rgba(113,174,255,.84);
+    background: rgba(99,176,255,.12);
+    border: 1px solid rgba(99,176,255,.22);
+    color: rgba(99,176,255,.92);
     font-size: 11px;
     font-weight: 700;
     letter-spacing: .16em;
@@ -142,12 +142,12 @@
   .lesson-card.active {
     cursor: pointer;
     background: linear-gradient(145deg, #ffffff 0%, #f5f9fc 100%);
-    border-color: rgba(113,174,255,.24);
+    border-color: rgba(99,176,255,.30);
     transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
   }
   .lesson-card.active:hover {
     transform: translateY(-4px);
-    border-color: rgba(113,174,255,.42);
+    border-color: rgba(99,176,255,.52);
     box-shadow: 0 20px 46px rgba(3,14,29,.22);
   }
   .lesson-card .arrow-dot {
@@ -157,7 +157,7 @@
     border-radius: 50%;
     display: grid;
     place-items: center;
-    background: #3A4175;
+    background: var(--navy-3);
     color: #ffffff;
     font-size: 26px;
     line-height: 1;
@@ -206,7 +206,7 @@
     align-items: center;
     padding: 0 18px;
     border-bottom: 1px solid var(--line);
-    background: rgba(36,37,68,.94);
+    background: rgba(13,29,50,.94);
     backdrop-filter: blur(14px);
   }
   .toolbar-left, .toolbar-right { display: flex; gap: 9px; align-items: center; }
@@ -371,7 +371,7 @@
     border-radius: 0 20px 20px 20px;
   }
   .student .bubble {
-    background: #71AEFF;
+    background: #63B0FF;
     color: #ffffff;
     border-radius: 20px 0 20px 20px;
   }
