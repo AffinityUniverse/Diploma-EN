@@ -57,7 +57,6 @@
   }
 
   * { box-sizing: border-box; }
-  html { scroll-behavior: smooth; }
   html, body {
     margin: 0;
     min-height: 100%;
@@ -238,16 +237,12 @@
   .deck {
     height: 100vh;
     overflow-y: auto;
-    scroll-snap-type: y proximity;
-    scroll-padding-top: 108px;
     scrollbar-width: thin;
     scrollbar-color: rgba(255,255,255,.22) transparent;
     padding-top: 70px;
   }
   .part {
     min-height: calc(100vh - 70px);
-    scroll-snap-align: start;
-    scroll-margin-top: 108px;
     position: relative;
     display: flex;
     justify-content: center;
@@ -444,7 +439,7 @@
   .hint-chip span { color: #111111; font-weight: 400; margin-left: 4px; }
 
   /* ---------- PART 3 ---------- */
-  .pattern-section { margin-top: 48px; scroll-margin-top: 108px; }
+  .pattern-section { margin-top: 48px; }
   .pattern-section:first-of-type { margin-top: 12px; }
   .pattern-subtitle {
     color: #ffffff;
@@ -1020,7 +1015,7 @@ function applyRevealState(partIndex) {
 function applyAllRevealStates() { revealMap.forEach((_, i) => applyRevealState(i)); }
 function getPart3SectionAtStart(progress) { return part3Sections.find(section => section.start === progress) || null; }
 function getPart3SectionElement(section) { return section ? (section.element || document.getElementById(section.id)) : null; }
-function scrollToPart3Section(section) { const target = getPart3SectionElement(section); if (target) target.scrollIntoView({behavior:'smooth', block:'start'}); }
+function scrollToPart3Section(section) { /* auto anchor scrolling removed */ }
 
 function nextStep() {
   if (!activeLesson) return;
@@ -1041,7 +1036,6 @@ function nextStep() {
     applyRevealState(currentPart);
     const shownStep = steps[progress];
     const anchor = shownStep[shownStep.length - 1];
-    if (currentPart !== 2) requestAnimationFrame(() => keepVisible(anchor));
     updateState();
     return;
   }
@@ -1058,8 +1052,6 @@ function prevStep() {
     const currentBoundary = pendingSectionScroll;
     pendingSectionScroll = null;
     const previousSection = [...part3Sections].reverse().find(section => section.end <= currentBoundary);
-    if (previousSection) scrollToPart3Section(previousSection);
-    else document.getElementById('part-3').scrollIntoView({behavior:'smooth', block:'start'});
     updateState();
     return;
   }
@@ -1068,10 +1060,6 @@ function prevStep() {
     partProgress[currentPart] -= 1;
     applyRevealState(currentPart);
     const remaining = partProgress[currentPart];
-    if (remaining > 0 && currentPart !== 2) {
-      const anchorStep = revealMap[currentPart][remaining - 1];
-      requestAnimationFrame(() => keepVisible(anchorStep[anchorStep.length - 1]));
-    }
     updateState();
     return;
   }
@@ -1081,7 +1069,6 @@ function prevStep() {
     currentPart = previousPart;
     partProgress[previousPart] = revealMap[previousPart].length;
     applyRevealState(previousPart);
-    document.querySelector(`[data-part="${previousPart}"]`).scrollIntoView({behavior:'smooth', block:'start'});
     updateState();
   }
 }
@@ -1094,15 +1081,7 @@ function goToPart(partIndex) {
   target.classList.remove('entering');
   void target.offsetWidth;
   target.classList.add('entering');
-  target.scrollIntoView({behavior:'smooth', block:'start'});
   updateState();
-}
-
-function keepVisible(el) {
-  if (!el) return;
-  const rect = el.getBoundingClientRect();
-  const viewportBottom = window.innerHeight - 86;
-  if (rect.bottom > viewportBottom || rect.top < 84) el.scrollIntoView({behavior:'smooth', block:'center'});
 }
 
 function restartLesson() {
@@ -1111,7 +1090,6 @@ function restartLesson() {
   partProgress = revealMap.map(() => 0);
   applyAllRevealStates();
   currentPart = 0;
-  document.getElementById('part-1').scrollIntoView({behavior:'smooth', block:'start'});
   updateState();
 }
 
